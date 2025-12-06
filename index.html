@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberGrid Assault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0a0a0f;
+        }
+
+        .logo-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .logo-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transform: scale(2);
+        }
+
+        /* TOP ONE - LED Neon Text Marquee */
+        .neon-marquee-top {
+            position: absolute;
+            top: 2rem;
+            left: 0;
+            width: 100%;
+            height: 3rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .neon-marquee-top .neon-text-wrapper {
+            display: flex;
+            white-space: nowrap;
+            animation: marquee-top 20s linear infinite;
+        }
+
+        .neon-marquee-top .neon-text {
+            display: inline-block;
+            white-space: nowrap;
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #fff;
+            padding-right: 3rem;
+            text-shadow:
+                0 0 5px #fff,
+                0 0 10px #fff,
+                0 0 20px #0ff,
+                0 0 40px #0ff,
+                0 0 60px #0ff,
+                0 0 80px #0ff,
+                0 0 100px #0ff;
+            animation: flicker 0.1s infinite alternate, colorShift 4s ease-in-out infinite;
+        }
+
+        @keyframes marquee-top {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* SVG ONE - LED Neon Text Marquee */
+        .neon-marquee {
+            position: absolute;
+            top: calc(50% - 40px);
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 15.60%;
+            height: calc(9.70% + 16px);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .neon-marquee .neon-text-wrapper {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            animation: marquee-svg 15s linear infinite;
+        }
+
+        .neon-text {
+            display: inline-block;
+            white-space: nowrap;
+            font-family: 'Orbitron', monospace;
+            font-size: 2vw;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #fff;
+            text-shadow:
+                0 0 5px #fff,
+                0 0 10px #fff,
+                0 0 20px #0ff,
+                0 0 40px #0ff,
+                0 0 60px #0ff,
+                0 0 80px #0ff,
+                0 0 100px #0ff;
+            animation: marquee 8s linear infinite, flicker 0.1s infinite alternate, colorShift 4s ease-in-out infinite;
+        }
+
+        /* SVG ONE specific text style - smaller font with pink neon */
+        .neon-marquee .neon-text {
+            font-family: 'Zen Kaku Gothic New', sans-serif;
+            font-size: 4.4vh;
+            line-height: 1;
+            padding: 0;
+            margin-right: 2em;
+            text-shadow:
+                0 0 5px #fff,
+                0 0 10px #fff,
+                0 0 20px #ff00ff,
+                0 0 40px #ff00ff,
+                0 0 60px #ff00ff,
+                0 0 80px #ff00ff,
+                0 0 100px #ff00ff;
+            animation: flicker-pink 0.1s infinite alternate;
+        }
+
+        @keyframes marquee-svg {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow:
+                    0 0 5px #fff,
+                    0 0 10px #fff,
+                    0 0 20px #0ff,
+                    0 0 40px #0ff,
+                    0 0 60px #0ff,
+                    0 0 80px #0ff,
+                    0 0 100px #0ff;
+            }
+            20%, 24%, 55% {
+                text-shadow:
+                    0 0 2px #fff,
+                    0 0 5px #0ff,
+                    0 0 10px #0ff;
+            }
+        }
+
+        @keyframes flicker-pink {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow:
+                    0 0 5px #fff,
+                    0 0 10px #fff,
+                    0 0 20px #ff00ff,
+                    0 0 40px #ff00ff,
+                    0 0 60px #ff00ff,
+                    0 0 80px #ff00ff,
+                    0 0 100px #ff00ff;
+            }
+            20%, 24%, 55% {
+                text-shadow:
+                    0 0 2px #fff,
+                    0 0 5px #ff00ff,
+                    0 0 10px #ff00ff;
+            }
+        }
+
+        @keyframes colorShift {
+            0%, 100% {
+                text-shadow:
+                    0 0 5px #fff,
+                    0 0 10px #fff,
+                    0 0 20px #0ff,
+                    0 0 40px #0ff,
+                    0 0 60px #0ff,
+                    0 0 80px #0ff;
+                color: #fff;
+            }
+            25% {
+                text-shadow:
+                    0 0 5px #fff,
+                    0 0 10px #fff,
+                    0 0 20px #f0f,
+                    0 0 40px #f0f,
+                    0 0 60px #f0f,
+                    0 0 80px #f0f;
+                color: #fff;
+            }
+            50% {
+                text-shadow:
+                    0 0 5px #fff,
+                    0 0 10px #fff,
+                    0 0 20px #0f0,
+                    0 0 40px #0f0,
+                    0 0 60px #0f0,
+                    0 0 80px #0f0;
+                color: #fff;
+            }
+            75% {
+                text-shadow:
+                    0 0 5px #fff,
+                    0 0 10px #fff,
+                    0 0 20px #ff0,
+                    0 0 40px #ff0,
+                    0 0 60px #ff0,
+                    0 0 80px #ff0;
+                color: #fff;
+            }
+        }
+
+        /* KYOTO 2087 - Static neon text below SVG */
+        .kyoto-text {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(0.4rem, 0.8vw, 0.7rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: #fff;
+            padding: 0.5em 1.5em;
+            text-shadow:
+                0 0 3px #fff,
+                0 0 8px #ff00ff,
+                0 0 15px #ff00ff;
+            animation: glow-pulse 2s ease-in-out infinite;
+        }
+
+        /* Responsive adjustments */
+        @media (max-height: 600px) {
+            .kyoto-text {
+                bottom: 50px;
+                font-size: clamp(0.28rem, 0.64vw, 0.56rem);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .kyoto-text {
+                bottom: 60px;
+                letter-spacing: 0.15em;
+            }
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% {
+                text-shadow:
+                    0 0 5px #fff,
+                    0 0 10px #fff,
+                    0 0 20px #ff00ff,
+                    0 0 40px #ff00ff,
+                    0 0 60px #ff00ff,
+                    0 0 80px #ff00ff,
+                    0 0 100px #ff00ff,
+                    0 0 150px #ff00ff;
+            }
+            50% {
+                text-shadow:
+                    0 0 10px #fff,
+                    0 0 20px #fff,
+                    0 0 40px #ff00ff,
+                    0 0 80px #ff00ff,
+                    0 0 120px #ff00ff,
+                    0 0 160px #ff00ff,
+                    0 0 200px #ff00ff,
+                    0 0 250px #ff00ff;
+            }
+        }
+
+        /* Music Toggle Switch */
+        .music-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            color: #888;
+            cursor: pointer;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #333;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .music-toggle:hover {
+            color: #ff00ff;
+            border-color: #ff00ff;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        }
+
+        .music-toggle.active {
+            color: #0ff;
+            border-color: #0ff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .music-toggle .toggle-icon {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <img src="logo.svg" alt="CyberGrid Assault">
+        <!-- Top Banner Marquee -->
+        <div class="neon-marquee-top">
+            <div class="neon-text-wrapper">
+                <span class="neon-text">CYBERGRID ASSAULT</span>
+                <span class="neon-text">CYBERGRID ASSAULT</span>
+                <span class="neon-text">CYBERGRID ASSAULT</span>
+                <span class="neon-text">CYBERGRID ASSAULT</span>
+                <span class="neon-text">CYBERGRID ASSAULT</span>
+                <span class="neon-text">CYBERGRID ASSAULT</span>
+                <span class="neon-text">CYBERGRID ASSAULT</span>
+                <span class="neon-text">CYBERGRID ASSAULT</span>
+            </div>
+        </div>
+        <!-- Eyeglass Marquee -->
+        <div class="neon-marquee">
+            <div class="neon-text-wrapper">
+                <span class="neon-text">残心 ― グリッドに散れ</span>
+                <span class="neon-text">残心 ― グリッドに散れ</span>
+                <span class="neon-text">残心 ― グリッドに散れ</span>
+                <span class="neon-text">残心 ― グリッドに散れ</span>
+                <span class="neon-text">残心 ― グリッドに散れ</span>
+                <span class="neon-text">残心 ― グリッドに散れ</span>
+                <span class="neon-text">残心 ― グリッドに散れ</span>
+                <span class="neon-text">残心 ― グリッドに散れ</span>
+            </div>
+        </div>
+        <!-- KYOTO 2087 Static Text -->
+        <div class="kyoto-text">KYOTO, 2087</div>
+    </div>
+
+    <!-- Music Toggle -->
+    <div class="music-toggle" id="musicToggle" onclick="toggleMusic()">
+        <span class="toggle-icon" id="musicIcon">♪</span>
+        <span id="musicLabel">MUSIC OFF</span>
+    </div>
+
+    <!-- Hidden Audio Player -->
+    <audio id="bgMusic" loop>
+        <source src="cybergridassault-NeoKyoto.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        let isPlaying = false;
+        const music = document.getElementById('bgMusic');
+        const musicLabel = document.getElementById('musicLabel');
+        const musicToggle = document.getElementById('musicToggle');
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                musicLabel.textContent = 'MUSIC OFF';
+                musicToggle.classList.remove('active');
+            } else {
+                music.play();
+                musicLabel.textContent = 'MUSIC ON';
+                musicToggle.classList.add('active');
+            }
+            isPlaying = !isPlaying;
+        }
+    </script>
+</body>
+</html>
