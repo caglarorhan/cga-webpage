@@ -87,9 +87,27 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            transform: scale(1.5);
+            transform: scale(1.2);
             position: relative;
             z-index: 5;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Zoomed state - eyemask fills viewport */
+        .logo-container.zoomed img {
+            transform: scale(6);
+        }
+
+        @media (max-height: 800px) {
+            .logo-container.zoomed img {
+                transform: scale(5);
+            }
+        }
+
+        @media (max-height: 600px) {
+            .logo-container.zoomed img {
+                transform: scale(4);
+            }
         }
 
         /* TOP ONE - LED Neon Text Marquee */
@@ -152,6 +170,13 @@
             overflow: hidden;
             display: flex;
             align-items: center;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Hide eyemask marquee when zoomed */
+        .logo-container.zoomed .neon-marquee {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .neon-marquee .neon-text-wrapper {
@@ -324,7 +349,10 @@
                 padding: 0.5em 1em;
             }
             .logo-container img {
-                transform: scale(1);
+                transform: scale(1.3);
+            }
+            .logo-container.zoomed img {
+                transform: scale(4);
             }
             .neon-marquee {
                 width: 10.4%;
@@ -345,7 +373,10 @@
                 margin-bottom: 0.5rem;
             }
             .logo-container img {
-                transform: scale(1.2);
+                transform: scale(1.0);
+            }
+            .logo-container.zoomed img {
+                transform: scale(5);
             }
             .neon-marquee {
                 width: 13.73%;
@@ -369,7 +400,10 @@
                 padding: 0.5rem;
             }
             .logo-container img {
-                transform: scale(1);
+                transform: scale(0.8);
+            }
+            .logo-container.zoomed img {
+                transform: scale(4.5);
             }
             .kyoto-text {
                 font-size: clamp(0.25rem, 2vw, 0.4rem);
@@ -394,7 +428,10 @@
 
         @media (min-width: 1400px) {
             .logo-container img {
-                transform: scale(2);
+                transform: scale(1.7);
+            }
+            .logo-container.zoomed img {
+                transform: scale(7);
             }
             .neon-marquee {
                 width: 15.60%;
@@ -695,10 +732,261 @@
                 display: none;
             }
         }
+
+        /* ===== NEWS OVERLAY PANEL ===== */
+        .news-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            max-width: 700px;
+            height: 50%;
+            max-height: 400px;
+            background: rgba(5, 5, 15, 0.95);
+            border: 2px solid #f80;
+            clip-path: polygon(
+                0 15px, 15px 0, calc(100% - 15px) 0, 100% 15px,
+                100% calc(100% - 15px), calc(100% - 15px) 100%,
+                15px 100%, 0 calc(100% - 15px)
+            );
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease 0.3s, visibility 0.4s ease 0.3s;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 
+                0 0 30px rgba(255, 136, 0, 0.4),
+                inset 0 0 30px rgba(255, 136, 0, 0.1);
+        }
+
+        .logo-container.zoomed ~ .news-overlay,
+        .news-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .news-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 136, 0, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(255, 136, 0, 0.15) 0%, transparent 100%);
+        }
+
+        .news-header h2 {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f80;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin: 0;
+            text-shadow: 0 0 10px rgba(255, 136, 0, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .news-header .close-btn {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.75rem;
+            color: #888;
+            background: transparent;
+            border: 1px solid #444;
+            padding: 0.4em 0.8em;
+            cursor: pointer;
+            clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+            transition: all 0.1s;
+        }
+
+        .news-header .close-btn:hover {
+            color: #f80;
+            border-color: #f80;
+            box-shadow: 0 0 10px rgba(255, 136, 0, 0.4);
+        }
+
+        .news-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 1.5rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        /* Cyberpunk Scrollbar */
+        .news-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .news-content::-webkit-scrollbar-track {
+            background: rgba(255, 136, 0, 0.1);
+            border-left: 1px solid rgba(255, 136, 0, 0.3);
+        }
+
+        .news-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #f80 0%, #f50 100%);
+            border-radius: 0;
+            box-shadow: 0 0 8px rgba(255, 136, 0, 0.5);
+        }
+
+        .news-content::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #fa0 0%, #f80 100%);
+        }
+
+        /* News Items */
+        .news-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 136, 0, 0.2);
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .news-item .news-date {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            color: #0ff;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.3rem;
+        }
+
+        .news-item .news-tag {
+            display: inline-block;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.6rem;
+            padding: 0.2em 0.6em;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .news-tag--update {
+            background: rgba(0, 255, 255, 0.2);
+            color: #0ff;
+            border: 1px solid #0ff;
+        }
+
+        .news-tag--event {
+            background: rgba(255, 0, 255, 0.2);
+            color: #f0f;
+            border: 1px solid #f0f;
+        }
+
+        .news-tag--patch {
+            background: rgba(0, 255, 102, 0.2);
+            color: #0f6;
+            border: 1px solid #0f6;
+        }
+
+        .news-item h3 {
+            font-family: 'Orbitron', monospace;
+            font-size: 1rem;
+            color: #fff;
+            margin: 0.5rem 0;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+
+        .news-item p {
+            margin: 0;
+            color: #aaa;
+        }
+
+        .news-footer {
+            padding: 0.8rem 1.5rem;
+            border-top: 1px solid rgba(255, 136, 0, 0.3);
+            text-align: center;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 136, 0, 0.1) 50%, transparent 100%);
+        }
+
+        .news-footer span {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.65rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        /* Scanline effect on news */
+        .news-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.15) 2px,
+                rgba(0, 0, 0, 0.15) 4px
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Corner decorations */
+        .news-overlay::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px solid rgba(255, 136, 0, 0.2);
+            pointer-events: none;
+        }
+
+        /* Responsive news panel */
+        @media (max-width: 768px) {
+            .news-overlay {
+                width: 85%;
+                height: 60%;
+                max-height: 350px;
+            }
+            .news-header h2 {
+                font-size: 0.9rem;
+            }
+            .news-content {
+                font-size: 0.85rem;
+                padding: 0.8rem 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .news-overlay {
+                width: 92%;
+                height: 55%;
+                max-height: 300px;
+            }
+            .news-header {
+                padding: 0.8rem 1rem;
+            }
+            .news-header h2 {
+                font-size: 0.75rem;
+                letter-spacing: 0.1em;
+            }
+            .news-content {
+                font-size: 0.8rem;
+                padding: 0.6rem 0.8rem;
+            }
+            .news-item h3 {
+                font-size: 0.85rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="logo-container">
+    <div class="logo-container" id="logoContainer">
         <img src="logo.svg" alt="CyberGrid Assault">
         <!-- Top Banner Marquee -->
         <div class="neon-marquee-top">
@@ -735,11 +1023,8 @@
         <a href="#play" class="cyber-btn cyber-btn--play">
             <span class="btn-text"><span class="btn-icon">⚡</span> PLAY</span>
         </a>
-        <a href="#heroes" class="cyber-btn cyber-btn--agents">
+        <a href="heroes.html" class="cyber-btn cyber-btn--agents">
             <span class="btn-text"><span class="btn-icon">🥷</span> HEROES</span>
-        </a>
-        <a href="#lore" class="cyber-btn cyber-btn--lore">
-            <span class="btn-text"><span class="btn-icon">📜</span> LORE</span>
         </a>
         <a href="wiki.html" class="cyber-btn cyber-btn--wiki">
             <span class="btn-text"><span class="btn-icon">📖</span> WIKI</span>
@@ -747,10 +1032,52 @@
         <a href="#discord" class="cyber-btn cyber-btn--discord">
             <span class="btn-text"><span class="btn-icon">💬</span> DISCORD</span>
         </a>
-        <a href="#news" class="cyber-btn cyber-btn--news">
+        <a href="#news" class="cyber-btn cyber-btn--news" onclick="toggleZoom(event)">
             <span class="btn-text"><span class="btn-icon">📰</span> NEWS</span>
         </a>
     </nav>
+
+    <!-- News Overlay Panel -->
+    <div class="news-overlay" id="newsOverlay">
+        <div class="news-header">
+            <h2>📰 GRID TRANSMISSIONS</h2>
+            <button class="close-btn" onclick="toggleZoom(event)">[ESC] CLOSE</button>
+        </div>
+        <div class="news-content">
+            <article class="news-item">
+                <div class="news-date">DEC 07, 2087 <span class="news-tag news-tag--update">UPDATE</span></div>
+                <h3>Season 2: Shadow Protocol Now Live</h3>
+                <p>New hero GHOST joins the roster. Master invisibility and disruption tactics in the latest update to CyberGrid Assault.</p>
+            </article>
+
+            <article class="news-item">
+                <div class="news-date">DEC 05, 2087 <span class="news-tag news-tag--event">EVENT</span></div>
+                <h3>Neon Nights Tournament Series</h3>
+                <p>Compete in the weekly Grid championships. Top squads earn exclusive cosmetics and 50,000 credits prize pool.</p>
+            </article>
+
+            <article class="news-item">
+                <div class="news-date">DEC 01, 2087 <span class="news-tag news-tag--patch">PATCH</span></div>
+                <h3>Balance Update v2.3.1</h3>
+                <p>Katana dash cooldown increased. Vanta shield duration reduced. Multiple weapon tuning adjustments.</p>
+            </article>
+
+            <article class="news-item">
+                <div class="news-date">NOV 28, 2087 <span class="news-tag news-tag--update">UPDATE</span></div>
+                <h3>New Map: Helix Tower</h3>
+                <p>Fight through the corporate headquarters of HelixCorp. Vertical gameplay and tight corridors await.</p>
+            </article>
+
+            <article class="news-item">
+                <div class="news-date">NOV 22, 2087 <span class="news-tag news-tag--event">EVENT</span></div>
+                <h3>Double XP Weekend</h3>
+                <p>Level up faster this weekend. All operatives receive 2x experience from all matches.</p>
+            </article>
+        </div>
+        <div class="news-footer">
+            <span>// END OF TRANSMISSION //</span>
+        </div>
+    </div>
 
     <!-- Music Toggle -->
     <div class="music-toggle" id="musicToggle" onclick="toggleMusic()">
@@ -764,6 +1091,26 @@
     </audio>
 
     <script>
+        // Logo zoom toggle
+        const logoContainer = document.getElementById('logoContainer');
+        const newsOverlay = document.getElementById('newsOverlay');
+        let isZoomed = false;
+
+        function toggleZoom(e) {
+            e.preventDefault();
+            isZoomed = !isZoomed;
+            logoContainer.classList.toggle('zoomed', isZoomed);
+            newsOverlay.classList.toggle('visible', isZoomed);
+        }
+
+        // Close on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isZoomed) {
+                toggleZoom(e);
+            }
+        });
+
+        // Music toggle
         let isPlaying = false;
         const music = document.getElementById('bgMusic');
         const musicLabel = document.getElementById('musicLabel');

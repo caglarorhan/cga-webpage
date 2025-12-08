@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heroes | CyberGrid Assault</title>
+    
+    <meta name="description" content="Meet the elite operatives of CyberGrid Assault. Choose your hero and dominate the Grid.">
+    <meta name="theme-color" content="#0a0a0f">
+    
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cyan: #0ff;
+            --magenta: #f0f;
+            --yellow: #fd0;
+            --green: #0f6;
+            --orange: #f80;
+            --red: #f33;
+            --purple: #7289da;
+            --bg-dark: #0a0a0f;
+            --bg-card: rgba(15, 15, 25, 0.9);
+            --text: #e0e0e0;
+            --text-dim: #888;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, rgba(255, 0, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(255, 0, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Scanline overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.1) 2px,
+                rgba(0, 0, 0, 0.1) 4px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .heroes-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 15, 0.95);
+            border-bottom: 1px solid var(--magenta);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+            z-index: 1000;
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .heroes-nav .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--cyan);
+            text-decoration: none;
+            text-shadow: 0 0 10px var(--cyan);
+        }
+
+        .heroes-nav .back-btn {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.75rem;
+            color: var(--magenta);
+            text-decoration: none;
+            padding: 0.5em 1em;
+            border: 1px solid var(--magenta);
+            clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+            transition: all 0.1s;
+        }
+
+        .heroes-nav .back-btn:hover {
+            background: rgba(255, 0, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+        }
+
+        /* ===== HEADER ===== */
+        .heroes-header {
+            text-align: center;
+            padding: 8rem 2rem 3rem;
+            position: relative;
+        }
+
+        .heroes-header h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 900;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            text-shadow: 
+                0 0 10px var(--magenta),
+                0 0 20px var(--magenta),
+                0 0 40px var(--magenta);
+            margin-bottom: 1rem;
+        }
+
+        .heroes-header .subtitle {
+            font-family: 'Orbitron', monospace;
+            font-size: 1rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            text-shadow: 0 0 10px var(--cyan);
+        }
+
+        /* ===== HEROES GRID ===== */
+        .heroes-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .heroes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        /* ===== HERO CARD ===== */
+        .hero-card {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--magenta);
+            clip-path: polygon(
+                0 20px, 20px 0, calc(100% - 20px) 0, 100% 20px,
+                100% calc(100% - 20px), calc(100% - 20px) 100%,
+                20px 100%, 0 calc(100% - 20px)
+            );
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .hero-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 
+                0 10px 40px rgba(255, 0, 255, 0.3),
+                0 0 30px rgba(255, 0, 255, 0.2);
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                transparent 0%,
+                transparent 50%,
+                rgba(0, 0, 0, 0.8) 100%
+            );
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Glitch effect on hover */
+        .hero-card:hover .hero-image {
+            animation: glitch-img 0.3s ease;
+        }
+
+        @keyframes glitch-img {
+            0%, 100% { transform: translate(0); filter: hue-rotate(0deg); }
+            20% { transform: translate(-3px, 2px); filter: hue-rotate(90deg); }
+            40% { transform: translate(3px, -2px); filter: hue-rotate(-90deg); }
+            60% { transform: translate(-2px, -2px); filter: hue-rotate(180deg); }
+            80% { transform: translate(2px, 2px); filter: hue-rotate(-180deg); }
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+        }
+
+        .hero-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem;
+            z-index: 3;
+        }
+
+        .hero-role {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.3rem;
+            text-shadow: 0 0 8px var(--cyan);
+        }
+
+        .hero-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            text-shadow: 
+                0 0 10px var(--magenta),
+                2px 2px 0 var(--magenta);
+        }
+
+        .hero-tagline {
+            font-style: italic;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        /* Stats bar */
+        .hero-stats-bar {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.8rem;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-label {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.55rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .stat-bar {
+            width: 50px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-top: 3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .stat-fill--health { background: var(--green); box-shadow: 0 0 8px var(--green); }
+        .stat-fill--speed { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+        .stat-fill--damage { background: var(--red); box-shadow: 0 0 8px var(--red); }
+
+        /* Corner accent */
+        .hero-card::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            border-top: 2px solid var(--cyan);
+            border-right: 2px solid var(--cyan);
+            z-index: 4;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+
+        .hero-card:hover::after {
+            opacity: 1;
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        /* Faction indicator */
+        .hero-faction {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.6rem;
+            padding: 0.3em 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            z-index: 4;
+            clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+        }
+
+        .faction--helix {
+            background: rgba(0, 255, 255, 0.2);
+            color: var(--cyan);
+            border: 1px solid var(--cyan);
+        }
+
+        .faction--arclight {
+            background: rgba(255, 221, 0, 0.2);
+            color: var(--yellow);
+            border: 1px solid var(--yellow);
+        }
+
+        .faction--vanta {
+            background: rgba(114, 137, 218, 0.2);
+            color: var(--purple);
+            border: 1px solid var(--purple);
+        }
+
+        .faction--collapse {
+            background: rgba(255, 51, 51, 0.2);
+            color: var(--red);
+            border: 1px solid var(--red);
+        }
+
+        .faction--indie {
+            background: rgba(0, 255, 102, 0.2);
+            color: var(--green);
+            border: 1px solid var(--green);
+        }
+
+        /* ===== FOOTER ===== */
+        .heroes-footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 0, 255, 0.2);
+        }
+
+        .heroes-footer .quote {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1rem;
+            color: var(--magenta);
+            font-style: italic;
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+            margin-bottom: 1rem;
+        }
+
+        .heroes-footer .cta {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .heroes-nav {
+                padding: 0.6rem 1rem;
+            }
+
+            .heroes-header {
+                padding: 6rem 1rem 2rem;
+            }
+
+            .heroes-header h1 {
+                letter-spacing: 0.1em;
+            }
+
+            .heroes-container {
+                padding: 1rem;
+            }
+
+            .heroes-grid {
+                gap: 1.5rem;
+            }
+
+            .hero-image {
+                height: 350px;
+            }
+
+            .hero-name {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .heroes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-image {
+                height: 300px;
+            }
+
+            .hero-info {
+                padding: 1rem;
+            }
+
+            .hero-name {
+                font-size: 1.3rem;
+            }
+
+            .hero-stats-bar {
+                gap: 0.5rem;
+            }
+
+            .stat-bar {
+                width: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="heroes-nav">
+        <a href="index.html" class="logo">CYBERGRID ASSAULT</a>
+        <a href="index.html" class="back-btn">← BACK TO MAIN</a>
+    </nav>
+
+    <!-- Header -->
+    <header class="heroes-header">
+        <h1>🥷 Heroes</h1>
+        <p class="subtitle">Choose Your Operative</p>
+    </header>
+
+    <!-- Heroes Grid -->
+    <div class="heroes-container">
+        <div class="heroes-grid">
+
+            <!-- VANTA -->
+            <article class="hero-card">
+                <span class="hero-faction faction--helix">HelixCorp</span>
+                <img src="img/heros/Vanta.png" alt="Vanta" class="hero-image">
+                <div class="hero-info">
+                    <div class="hero-role">Tank / Frontline</div>
+                    <h2 class="hero-name">Vanta</h2>
+                    <p class="hero-tagline">"The immovable object."</p>
+                    <div class="hero-stats-bar">
+                        <div class="stat">
+                            <span class="stat-label">Health</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--health" style="width: 100%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Speed</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--speed" style="width: 60%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Damage</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--damage" style="width: 50%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- SPECTRE -->
+            <article class="hero-card">
+                <span class="hero-faction faction--vanta">Vanta Syndicate</span>
+                <img src="img/heros/Spectre.png" alt="Spectre" class="hero-image">
+                <div class="hero-info">
+                    <div class="hero-role">Flanker / Scout</div>
+                    <h2 class="hero-name">Spectre</h2>
+                    <p class="hero-tagline">"Now you see me... now you don't."</p>
+                    <div class="hero-stats-bar">
+                        <div class="stat">
+                            <span class="stat-label">Health</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--health" style="width: 70%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Speed</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--speed" style="width: 80%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Damage</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--damage" style="width: 70%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- KATANA -->
+            <article class="hero-card">
+                <span class="hero-faction faction--arclight">ArcLight</span>
+                <img src="img/heros/Katana.png" alt="Katana" class="hero-image">
+                <div class="hero-info">
+                    <div class="hero-role">Burst Assassin</div>
+                    <h2 class="hero-name">Katana</h2>
+                    <p class="hero-tagline">"Speed is life."</p>
+                    <div class="hero-stats-bar">
+                        <div class="stat">
+                            <span class="stat-label">Health</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--health" style="width: 55%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Speed</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--speed" style="width: 100%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Damage</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--damage" style="width: 90%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- BYTE -->
+            <article class="hero-card">
+                <span class="hero-faction faction--collapse">Collapse Unit</span>
+                <img src="img/heros/Byte.png" alt="Byte" class="hero-image">
+                <div class="hero-info">
+                    <div class="hero-role">Control Specialist</div>
+                    <h2 class="hero-name">Byte</h2>
+                    <p class="hero-tagline">"I see your firewall... how cute."</p>
+                    <div class="hero-stats-bar">
+                        <div class="stat">
+                            <span class="stat-label">Health</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--health" style="width: 75%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Speed</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--speed" style="width: 70%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Damage</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--damage" style="width: 55%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- GLYPH -->
+            <article class="hero-card">
+                <span class="hero-faction faction--arclight">ArcLight</span>
+                <img src="img/heros/Glyph.png" alt="Glyph" class="hero-image">
+                <div class="hero-info">
+                    <div class="hero-role">Vision / Utility</div>
+                    <h2 class="hero-name">Glyph</h2>
+                    <p class="hero-tagline">"Knowledge is power. I know everything."</p>
+                    <div class="hero-stats-bar">
+                        <div class="stat">
+                            <span class="stat-label">Health</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--health" style="width: 75%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Speed</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--speed" style="width: 80%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Damage</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--damage" style="width: 45%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- SPARK -->
+            <article class="hero-card">
+                <span class="hero-faction faction--helix">HelixCorp</span>
+                <img src="img/heros/Spark.png" alt="Spark" class="hero-image">
+                <div class="hero-info">
+                    <div class="hero-role">Area Denial</div>
+                    <h2 class="hero-name">Spark</h2>
+                    <p class="hero-tagline">"Some just want to watch the world burn."</p>
+                    <div class="hero-stats-bar">
+                        <div class="stat">
+                            <span class="stat-label">Health</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--health" style="width: 75%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Speed</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--speed" style="width: 70%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Damage</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--damage" style="width: 75%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ZERO -->
+            <article class="hero-card">
+                <span class="hero-faction faction--collapse">Collapse Unit</span>
+                <img src="img/heros/Zero.png" alt="Zero" class="hero-image">
+                <div class="hero-info">
+                    <div class="hero-role">Sniper / Scout</div>
+                    <h2 class="hero-name">Zero</h2>
+                    <p class="hero-tagline">"One shot. One kill."</p>
+                    <div class="hero-stats-bar">
+                        <div class="stat">
+                            <span class="stat-label">Health</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--health" style="width: 55%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Speed</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--speed" style="width: 80%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Damage</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--damage" style="width: 100%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- MIRA -->
+            <article class="hero-card">
+                <span class="hero-faction faction--indie">Independent</span>
+                <img src="img/heros/Mira.png" alt="Mira" class="hero-image">
+                <div class="hero-info">
+                    <div class="hero-role">Medic / Support</div>
+                    <h2 class="hero-name">Mira</h2>
+                    <p class="hero-tagline">"I'll patch you up... for a price."</p>
+                    <div class="hero-stats-bar">
+                        <div class="stat">
+                            <span class="stat-label">Health</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--health" style="width: 75%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Speed</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--speed" style="width: 80%"></div></div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Damage</span>
+                            <div class="stat-bar"><div class="stat-fill stat-fill--damage" style="width: 40%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="heroes-footer">
+        <p class="quote">"Choose wisely. The Grid shows no mercy."</p>
+        <p class="cta">// More operatives incoming //</p>
+    </footer>
+</body>
+</html>
