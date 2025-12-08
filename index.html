@@ -470,6 +470,231 @@
             align-items: center;
             justify-content: center;
         }
+
+        /* ===== CYBERPUNK NAV BUTTONS ===== */
+        .cyber-nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            padding: 0 1rem;
+            margin-bottom: 1.5rem;
+            z-index: 100;
+        }
+
+        .cyber-btn {
+            position: relative;
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(0.6rem, 1.2vw, 0.85rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            color: #fff;
+            padding: 0.8em 1.8em;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(20, 20, 30, 0.9) 100%);
+            border: 1px solid;
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        /* Corner accents */
+        .cyber-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, transparent 50%, currentColor 50%, currentColor 100%);
+            opacity: 0.1;
+        }
+
+        /* Scanline overlay */
+        .cyber-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.1) 2px,
+                rgba(0, 0, 0, 0.1) 4px
+            );
+            pointer-events: none;
+        }
+
+        .cyber-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .cyber-btn:hover::before {
+            opacity: 0.3;
+        }
+
+        /* Glitch effect on hover */
+        .cyber-btn:hover .btn-text {
+            animation: glitch 0.2s linear;
+        }
+
+        .btn-text {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+        }
+
+        .btn-icon {
+            font-size: 1.1em;
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 1px); }
+            40% { transform: translate(2px, -1px); }
+            60% { transform: translate(-1px, -1px); }
+            80% { transform: translate(1px, 1px); }
+        }
+
+        /* ===== BUTTON COLOR VARIANTS ===== */
+        
+        /* PLAY - Cyan (Primary CTA) */
+        .cyber-btn--play {
+            border-color: #0ff;
+            color: #0ff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3), inset 0 0 10px rgba(0, 255, 255, 0.1);
+            animation: pulse-cyan 2s ease-in-out infinite;
+        }
+        .cyber-btn--play:hover {
+            animation: none;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.2) 0%, rgba(0, 50, 50, 0.8) 100%);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6), inset 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+        @keyframes pulse-cyan {
+            0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 255, 0.3), inset 0 0 10px rgba(0, 255, 255, 0.1); }
+            50% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 15px rgba(0, 255, 255, 0.15); }
+        }
+
+        /* AGENTS - Magenta */
+        .cyber-btn--agents {
+            border-color: #f0f;
+            color: #f0f;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.3), inset 0 0 10px rgba(255, 0, 255, 0.1);
+        }
+        .cyber-btn--agents:hover {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.2) 0%, rgba(50, 0, 50, 0.8) 100%);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.6), inset 0 0 20px rgba(255, 0, 255, 0.2);
+        }
+
+        /* LORE - Gold/Yellow */
+        .cyber-btn--lore {
+            border-color: #fd0;
+            color: #fd0;
+            box-shadow: 0 0 10px rgba(255, 221, 0, 0.3), inset 0 0 10px rgba(255, 221, 0, 0.1);
+        }
+        .cyber-btn--lore:hover {
+            background: linear-gradient(135deg, rgba(255, 221, 0, 0.2) 0%, rgba(50, 44, 0, 0.8) 100%);
+            box-shadow: 0 0 30px rgba(255, 221, 0, 0.6), inset 0 0 20px rgba(255, 221, 0, 0.2);
+        }
+
+        /* WIKI - Green */
+        .cyber-btn--wiki {
+            border-color: #0f6;
+            color: #0f6;
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.3), inset 0 0 10px rgba(0, 255, 102, 0.1);
+        }
+        .cyber-btn--wiki:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 102, 0.2) 0%, rgba(0, 50, 20, 0.8) 100%);
+            box-shadow: 0 0 30px rgba(0, 255, 102, 0.6), inset 0 0 20px rgba(0, 255, 102, 0.2);
+        }
+
+        /* DISCORD - Purple/Blurple */
+        .cyber-btn--discord {
+            border-color: #7289da;
+            color: #7289da;
+            box-shadow: 0 0 10px rgba(114, 137, 218, 0.3), inset 0 0 10px rgba(114, 137, 218, 0.1);
+        }
+        .cyber-btn--discord:hover {
+            background: linear-gradient(135deg, rgba(114, 137, 218, 0.2) 0%, rgba(30, 35, 55, 0.8) 100%);
+            box-shadow: 0 0 30px rgba(114, 137, 218, 0.6), inset 0 0 20px rgba(114, 137, 218, 0.2);
+        }
+
+        /* NEWS - Orange */
+        .cyber-btn--news {
+            border-color: #f80;
+            color: #f80;
+            box-shadow: 0 0 10px rgba(255, 136, 0, 0.3), inset 0 0 10px rgba(255, 136, 0, 0.1);
+        }
+        .cyber-btn--news:hover {
+            background: linear-gradient(135deg, rgba(255, 136, 0, 0.2) 0%, rgba(50, 27, 0, 0.8) 100%);
+            box-shadow: 0 0 30px rgba(255, 136, 0, 0.6), inset 0 0 20px rgba(255, 136, 0, 0.2);
+        }
+
+        /* MEDIA - Red */
+        .cyber-btn--media {
+            border-color: #f33;
+            color: #f33;
+            box-shadow: 0 0 10px rgba(255, 51, 51, 0.3), inset 0 0 10px rgba(255, 51, 51, 0.1);
+        }
+        .cyber-btn--media:hover {
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.2) 0%, rgba(50, 10, 10, 0.8) 100%);
+            box-shadow: 0 0 30px rgba(255, 51, 51, 0.6), inset 0 0 20px rgba(255, 51, 51, 0.2);
+        }
+
+        /* STORE - Teal */
+        .cyber-btn--store {
+            border-color: #0cc;
+            color: #0cc;
+            box-shadow: 0 0 10px rgba(0, 204, 204, 0.3), inset 0 0 10px rgba(0, 204, 204, 0.1);
+        }
+        .cyber-btn--store:hover {
+            background: linear-gradient(135deg, rgba(0, 204, 204, 0.2) 0%, rgba(0, 40, 40, 0.8) 100%);
+            box-shadow: 0 0 30px rgba(0, 204, 204, 0.6), inset 0 0 20px rgba(0, 204, 204, 0.2);
+        }
+
+        /* SUPPORT - Light Blue */
+        .cyber-btn--support {
+            border-color: #6cf;
+            color: #6cf;
+            box-shadow: 0 0 10px rgba(102, 204, 255, 0.3), inset 0 0 10px rgba(102, 204, 255, 0.1);
+        }
+        .cyber-btn--support:hover {
+            background: linear-gradient(135deg, rgba(102, 204, 255, 0.2) 0%, rgba(20, 40, 50, 0.8) 100%);
+            box-shadow: 0 0 30px rgba(102, 204, 255, 0.6), inset 0 0 20px rgba(102, 204, 255, 0.2);
+        }
+
+        /* Responsive nav buttons */
+        @media (max-width: 768px) {
+            .cyber-nav {
+                gap: 0.6rem;
+                margin-bottom: 1rem;
+            }
+            .cyber-btn {
+                font-size: clamp(0.5rem, 2vw, 0.7rem);
+                padding: 0.6em 1.2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cyber-nav {
+                gap: 0.4rem;
+                margin-bottom: 0.8rem;
+            }
+            .cyber-btn {
+                font-size: clamp(0.45rem, 2.5vw, 0.6rem);
+                padding: 0.5em 1em;
+                letter-spacing: 0.1em;
+            }
+            .btn-icon {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -504,6 +729,28 @@
     </div>
     <!-- KYOTO 2087 Static Text -->
     <div class="kyoto-text">KYOTO, 2087</div>
+
+    <!-- Cyberpunk Navigation Buttons -->
+    <nav class="cyber-nav">
+        <a href="#play" class="cyber-btn cyber-btn--play">
+            <span class="btn-text"><span class="btn-icon">⚡</span> PLAY</span>
+        </a>
+        <a href="#heroes" class="cyber-btn cyber-btn--agents">
+            <span class="btn-text"><span class="btn-icon">🥷</span> HEROES</span>
+        </a>
+        <a href="#lore" class="cyber-btn cyber-btn--lore">
+            <span class="btn-text"><span class="btn-icon">📜</span> LORE</span>
+        </a>
+        <a href="wiki.html" class="cyber-btn cyber-btn--wiki">
+            <span class="btn-text"><span class="btn-icon">📖</span> WIKI</span>
+        </a>
+        <a href="#discord" class="cyber-btn cyber-btn--discord">
+            <span class="btn-text"><span class="btn-icon">💬</span> DISCORD</span>
+        </a>
+        <a href="#news" class="cyber-btn cyber-btn--news">
+            <span class="btn-text"><span class="btn-icon">📰</span> NEWS</span>
+        </a>
+    </nav>
 
     <!-- Music Toggle -->
     <div class="music-toggle" id="musicToggle" onclick="toggleMusic()">

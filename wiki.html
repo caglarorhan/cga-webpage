@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Wiki | CyberGrid Assault</title>
+    
+    <meta name="description" content="Complete guide to CyberGrid Assault - Heroes, Weapons, Game Modes, and Strategies for Neo Kyoto 2087">
+    <meta name="theme-color" content="#0a0a0f">
+    
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cyan: #0ff;
+            --magenta: #f0f;
+            --yellow: #fd0;
+            --green: #0f6;
+            --orange: #f80;
+            --red: #f33;
+            --purple: #7289da;
+            --bg-dark: #0a0a0f;
+            --bg-card: rgba(15, 15, 25, 0.9);
+            --text: #e0e0e0;
+            --text-dim: #888;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg-dark);
+            min-height: 100vh;
+        }
+
+        /* Scanline overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.1) 2px,
+                rgba(0, 0, 0, 0.1) 4px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .wiki-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 15, 0.95);
+            border-bottom: 1px solid var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            z-index: 1000;
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .wiki-nav .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--cyan);
+            text-decoration: none;
+            text-shadow: 0 0 10px var(--cyan);
+        }
+
+        .wiki-nav .back-btn {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.75rem;
+            color: var(--magenta);
+            text-decoration: none;
+            padding: 0.5em 1em;
+            border: 1px solid var(--magenta);
+            clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+        }
+
+        .wiki-nav .back-btn:hover {
+            background: rgba(255, 0, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .wiki-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 6rem 2rem 4rem;
+        }
+
+        /* ===== HEADER ===== */
+        .wiki-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 0, 255, 0.3);
+        }
+
+        .wiki-header h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan);
+            margin-bottom: 1rem;
+        }
+
+        .wiki-header .tagline {
+            font-style: italic;
+            color: var(--magenta);
+            font-size: 1.1rem;
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+        }
+
+        /* ===== TABLE OF CONTENTS ===== */
+        .toc {
+            background: var(--bg-card);
+            border: 1px solid var(--cyan);
+            padding: 1.5rem 2rem;
+            margin-bottom: 3rem;
+            clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+        }
+
+        .toc h2 {
+            font-family: 'Orbitron', monospace;
+            font-size: 1rem;
+            color: var(--cyan);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .toc ol {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .toc a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 0.3em 0;
+            display: block;
+            transition: color 0.1s;
+        }
+
+        .toc a:hover {
+            color: var(--cyan);
+            text-shadow: 0 0 8px var(--cyan);
+        }
+
+        .toc a::before {
+            content: '▸ ';
+            color: var(--magenta);
+        }
+
+        /* ===== SECTIONS ===== */
+        .wiki-section {
+            margin-bottom: 4rem;
+        }
+
+        .wiki-section h2 {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--magenta);
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .wiki-section h3 {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            color: var(--yellow);
+            margin: 2rem 0 1rem;
+            text-shadow: 0 0 8px rgba(255, 221, 0, 0.4);
+        }
+
+        .wiki-section h4 {
+            font-family: 'Orbitron', monospace;
+            font-size: 1rem;
+            color: var(--magenta);
+            margin: 1.5rem 0 0.8rem;
+        }
+
+        .wiki-section p {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+
+        .wiki-section strong {
+            color: #fff;
+        }
+
+        /* ===== FACTION CARDS ===== */
+        .faction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .faction-card {
+            background: var(--bg-card);
+            border: 1px solid;
+            padding: 1.5rem;
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+        }
+
+        .faction-card--helix { border-color: var(--cyan); }
+        .faction-card--arclight { border-color: var(--yellow); }
+        .faction-card--vanta { border-color: var(--purple); }
+        .faction-card--collapse { border-color: var(--red); }
+        .faction-card--indie { border-color: var(--green); }
+
+        .faction-card h4 {
+            font-family: 'Orbitron', monospace;
+            margin: 0 0 0.8rem;
+        }
+
+        .faction-card--helix h4 { color: var(--cyan); }
+        .faction-card--arclight h4 { color: var(--yellow); }
+        .faction-card--vanta h4 { color: var(--purple); }
+        .faction-card--collapse h4 { color: var(--red); }
+        .faction-card--indie h4 { color: var(--green); }
+
+        .faction-card .philosophy {
+            font-style: italic;
+            color: var(--text-dim);
+            margin-top: 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        /* ===== HERO CARDS ===== */
+        .hero-card {
+            background: var(--bg-card);
+            border: 1px solid var(--magenta);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+        }
+
+        .hero-card h3 {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.4rem;
+            color: var(--magenta);
+            margin: 0 0 0.3rem;
+        }
+
+        .hero-card .hero-tagline {
+            font-style: italic;
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+        }
+
+        .hero-card .hero-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.85rem;
+            color: var(--cyan);
+        }
+
+        .hero-card .playstyle {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 0, 255, 0.2);
+            font-style: italic;
+        }
+
+        /* ===== TABLES ===== */
+        .wiki-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0 2rem;
+            font-size: 0.95rem;
+        }
+
+        .wiki-table th,
+        .wiki-table td {
+            padding: 0.8rem 1rem;
+            text-align: left;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .wiki-table th {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--cyan);
+        }
+
+        .wiki-table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .wiki-table tr:hover {
+            background: rgba(0, 255, 255, 0.05);
+        }
+
+        .wiki-table code {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.85em;
+            color: var(--yellow);
+            background: rgba(255, 221, 0, 0.1);
+            padding: 0.2em 0.4em;
+        }
+
+        /* ===== FEATURE GRID ===== */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .feature-item {
+            background: var(--bg-card);
+            border-left: 3px solid var(--cyan);
+            padding: 1rem;
+        }
+
+        .feature-item strong {
+            color: var(--cyan);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ===== TIPS BOX ===== */
+        .tips-box {
+            background: rgba(0, 255, 102, 0.05);
+            border: 1px solid var(--green);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+        }
+
+        .tips-box h4 {
+            color: var(--green);
+            margin: 0 0 1rem;
+        }
+
+        .tips-box ol, .tips-box ul {
+            padding-left: 1.5rem;
+        }
+
+        .tips-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ===== SYNERGY TABLE ===== */
+        .synergy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .synergy-item {
+            background: var(--bg-card);
+            border: 1px solid var(--purple);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .synergy-item .combo {
+            font-family: 'Orbitron', monospace;
+            color: var(--purple);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ===== FOOTER ===== */
+        .wiki-footer {
+            text-align: center;
+            padding: 3rem 0;
+            margin-top: 4rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .wiki-footer .quote {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            color: var(--cyan);
+            font-style: italic;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            margin-bottom: 1rem;
+        }
+
+        .wiki-footer .team {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .wiki-nav {
+                padding: 0.6rem 1rem;
+            }
+
+            .wiki-container {
+                padding: 5rem 1rem 2rem;
+            }
+
+            .wiki-table {
+                font-size: 0.85rem;
+            }
+
+            .wiki-table th,
+            .wiki-table td {
+                padding: 0.5rem;
+            }
+
+            .hero-card .hero-stats {
+                flex-wrap: wrap;
+                gap: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="wiki-nav">
+        <a href="index.html" class="logo">CYBERGRID ASSAULT</a>
+        <a href="index.html" class="back-btn">← BACK TO MAIN</a>
+    </nav>
+
+    <div class="wiki-container">
+        <!-- Header -->
+        <header class="wiki-header">
+            <h1>🎮 Player Wiki</h1>
+            <p class="tagline">"In the neon-drenched megacity of Neo Kyoto, 2087, corporations wage shadow wars through elite mercenary squads. Welcome to the Grid."</p>
+        </header>
+
+        <!-- Table of Contents -->
+        <nav class="toc">
+            <h2>📖 Table of Contents</h2>
+            <ol>
+                <li><a href="#lore">The Lore</a></li>
+                <li><a href="#overview">Game Overview</a></li>
+                <li><a href="#controls">Controls</a></li>
+                <li><a href="#modes">Game Modes</a></li>
+                <li><a href="#heroes">Heroes</a></li>
+                <li><a href="#weapons">Weapons</a></li>
+                <li><a href="#economy">Economy System</a></li>
+                <li><a href="#mechanics">Game Mechanics</a></li>
+                <li><a href="#tips">Tips & Strategies</a></li>
+            </ol>
+        </nav>
+
+        <!-- THE LORE -->
+        <section id="lore" class="wiki-section">
+            <h2>🌆 The Lore</h2>
+            
+            <h3>The World of 2087</h3>
+            <p>In the year 2087, the world has been reshaped by the <strong>Great Collapse</strong> of 2045—a catastrophic cyber attack that brought down global infrastructure. From the ashes rose the <strong>Megacorporations</strong>, entities more powerful than governments, controlling everything from energy to information.</p>
+            <p><strong>Neo Kyoto</strong> stands as the crown jewel of the new world order—a sprawling vertical city where gleaming corporate towers pierce the smog-filled sky, while the streets below pulse with neon lights and desperate souls.</p>
+
+            <h3>The Factions</h3>
+            <p>Four major factions compete for dominance in the shadow wars:</p>
+
+            <div class="faction-grid">
+                <div class="faction-card faction-card--helix">
+                    <h4>🏢 HelixCorp</h4>
+                    <p>The dominant medical and biotech megacorporation. They specialize in cybernetic augmentation and biological enhancements. Their operatives are heavily armored, favoring durability over speed.</p>
+                    <p><strong>Heroes:</strong> Vanta, Spark</p>
+                    <p class="philosophy">"Strength Through Enhancement"</p>
+                </div>
+
+                <div class="faction-card faction-card--arclight">
+                    <h4>⚡ ArcLight Initiative</h4>
+                    <p>A coalition of hacktivists-turned-mercenaries who believe technology should free humanity, not enslave it. They use stolen corporate tech for guerrilla warfare.</p>
+                    <p><strong>Heroes:</strong> Katana, Glyph</p>
+                    <p class="philosophy">"Light the Way"</p>
+                </div>
+
+                <div class="faction-card faction-card--vanta">
+                    <h4>🕶️ Vanta Syndicate</h4>
+                    <p>A mysterious criminal organization that operates in the shadows. Masters of infiltration, assassination, and information warfare.</p>
+                    <p><strong>Heroes:</strong> Spectre</p>
+                    <p class="philosophy">"Unseen, Unheard, Unstoppable"</p>
+                </div>
+
+                <div class="faction-card faction-card--collapse">
+                    <h4>💀 Collapse Unit</h4>
+                    <p>Former corporate security forces who went rogue. They believe the only way forward is to tear down the current system entirely.</p>
+                    <p><strong>Heroes:</strong> Byte, Zero</p>
+                    <p class="philosophy">"From Ashes, Rebirth"</p>
+                </div>
+
+                <div class="faction-card faction-card--indie">
+                    <h4>🏥 Independents</h4>
+                    <p>Freelancers with no allegiance, selling their skills to the highest bidder.</p>
+                    <p><strong>Heroes:</strong> Mira</p>
+                    <p class="philosophy">"Credits Talk"</p>
+                </div>
+            </div>
+
+            <h3>The Grid</h3>
+            <p>The <strong>CyberGrid</strong> is a classified combat training simulation used by corporations to test and train their operatives. But rumors speak of something darker—that the Grid isn't just a simulation. The operatives who enter sometimes... change.</p>
+        </section>
+
+        <!-- GAME OVERVIEW -->
+        <section id="overview" class="wiki-section">
+            <h2>🎯 Game Overview</h2>
+            <p><strong>CyberGrid Assault</strong> is a fast-paced, top-down tactical shooter with MOBA-inspired hero abilities. Assemble your team, choose your hero, and engage in intense 4v4 battles across neon-lit arenas.</p>
+
+            <h3>Key Features</h3>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <strong>Hero-Based Combat</strong>
+                    Each hero has unique abilities and playstyles
+                </div>
+                <div class="feature-item">
+                    <strong>Tactical Gunplay</strong>
+                    Master recoil, movement, and positioning
+                </div>
+                <div class="feature-item">
+                    <strong>Economy System</strong>
+                    Earn credits to buy weapons each round
+                </div>
+                <div class="feature-item">
+                    <strong>Team Strategy</strong>
+                    Coordinate with allies for maximum effectiveness
+                </div>
+                <div class="feature-item">
+                    <strong>Dynamic Arenas</strong>
+                    Use cover, flanking routes, and vertical play
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTROLS -->
+        <section id="controls" class="wiki-section">
+            <h2>🎮 Controls</h2>
+
+            <h3>Movement & Combat</h3>
+            <table class="wiki-table">
+                <tr><th>Key</th><th>Action</th></tr>
+                <tr><td><code>W A S D</code></td><td>Move</td></tr>
+                <tr><td><code>Mouse</code></td><td>Aim</td></tr>
+                <tr><td><code>Left Click</code></td><td>Shoot</td></tr>
+                <tr><td><code>R</code></td><td>Reload</td></tr>
+                <tr><td><code>1-5</code></td><td>Switch Weapon Slot</td></tr>
+            </table>
+
+            <h3>Abilities</h3>
+            <table class="wiki-table">
+                <tr><th>Key</th><th>Action</th></tr>
+                <tr><td><code>Q</code></td><td>Ability 1 (configurable)</td></tr>
+                <tr><td><code>F</code></td><td>Ability 2 (configurable)</td></tr>
+                <tr><td><code>E</code></td><td>Ultimate Ability</td></tr>
+            </table>
+
+            <h3>Utility</h3>
+            <table class="wiki-table">
+                <tr><th>Key</th><th>Action</th></tr>
+                <tr><td><code>B</code></td><td>Open Buy Menu</td></tr>
+                <tr><td><code>ESC</code></td><td>Pause Menu</td></tr>
+                <tr><td><code>H</code></td><td>Toggle Help Panel</td></tr>
+                <tr><td><code>F3</code></td><td>Toggle Debug Info</td></tr>
+            </table>
+        </section>
+
+        <!-- GAME MODES -->
+        <section id="modes" class="wiki-section">
+            <h2>🏆 Game Modes</h2>
+
+            <h3>⚔️ Neon Deathmatch</h3>
+            <p>A classic team deathmatch where eliminations are everything.</p>
+            <ul>
+                <li><strong>Objective:</strong> Eliminate enemy players</li>
+                <li><strong>Win Condition:</strong> First team to reach the kill target wins the round</li>
+                <li><strong>Teams:</strong> Attackers vs Defenders</li>
+            </ul>
+
+            <h3>💾 Data Spike Assault</h3>
+            <p>A tactical bomb-defusal mode inspired by classic tactical shooters.</p>
+            <ul>
+                <li><strong>Attackers:</strong> Plant the Data Spike at designated upload points</li>
+                <li><strong>Defenders:</strong> Prevent the spike plant or defuse it</li>
+                <li><strong>Win Conditions:</strong>
+                    <ul>
+                        <li>Attackers: Successfully upload the Data Spike</li>
+                        <li>Defenders: Eliminate all attackers OR defuse the spike</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Round Structure</h3>
+            <ul>
+                <li>Matches are played as <strong>Best of X</strong> (configurable: 3, 5, 7, 9, or 13 rounds)</li>
+                <li>First team to win the majority of rounds wins the match</li>
+                <li>Teams switch sides at halftime</li>
+                <li><strong>10-second countdown</strong> between rounds for preparation</li>
+            </ul>
+        </section>
+
+        <!-- HEROES -->
+        <section id="heroes" class="wiki-section">
+            <h2>🦸 Heroes</h2>
+
+            <div class="hero-card">
+                <h3>🛡️ VANTA</h3>
+                <p class="hero-tagline">"The immovable object."</p>
+                <div class="hero-stats">
+                    <span>Health: 120</span>
+                    <span>Shield: 50</span>
+                    <span>Speed: 0.85x</span>
+                    <span>Role: Tank / Frontline</span>
+                </div>
+                <table class="wiki-table">
+                    <tr><th>Ability</th><th>Key</th><th>Description</th></tr>
+                    <tr><td>Titan Armor</td><td>Passive</td><td>+20% damage reduction</td></tr>
+                    <tr><td>Energy Shield</td><td>Q/F</td><td>Deploy a front-facing barrier (3s)</td></tr>
+                    <tr><td>Shockwave Slam</td><td>Q/F</td><td>Close-range AOE stun</td></tr>
+                    <tr><td>Overclock</td><td>E (Ult)</td><td>+40% DR + fire rate for 4s</td></tr>
+                </table>
+                <p class="playstyle"><strong>Playstyle:</strong> Lead the charge, absorb damage, and create space for your team.</p>
+            </div>
+
+            <div class="hero-card">
+                <h3>👻 SPECTRE</h3>
+                <p class="hero-tagline">"Now you see me... now you don't."</p>
+                <div class="hero-stats">
+                    <span>Health: 100</span>
+                    <span>Shield: 0</span>
+                    <span>Speed: 1.0x</span>
+                    <span>Role: Flanker / Scout</span>
+                </div>
+                <table class="wiki-table">
+                    <tr><th>Ability</th><th>Key</th><th>Description</th></tr>
+                    <tr><td>Ghost Steps</td><td>Passive</td><td>Footsteps 40% quieter</td></tr>
+                    <tr><td>Cloak</td><td>Q/F</td><td>Invisible for 2s</td></tr>
+                    <tr><td>Sensor Jammer</td><td>Q/F</td><td>Disable enemy minimap (2s)</td></tr>
+                    <tr><td>Shadow Dive</td><td>E (Ult)</td><td>Teleport behind enemy</td></tr>
+                </table>
+                <p class="playstyle"><strong>Playstyle:</strong> Infiltrate enemy lines, gather intel, and eliminate isolated targets.</p>
+            </div>
+
+            <div class="hero-card">
+                <h3>⚔️ KATANA</h3>
+                <p class="hero-tagline">"Speed is life."</p>
+                <div class="hero-stats">
+                    <span>Health: 90</span>
+                    <span>Shield: 0</span>
+                    <span>Speed: 1.15x (Fastest)</span>
+                    <span>Role: Burst Assassin</span>
+                </div>
+                <table class="wiki-table">
+                    <tr><th>Ability</th><th>Key</th><th>Description</th></tr>
+                    <tr><td>Sprint Boost</td><td>Passive</td><td>+15% movement speed</td></tr>
+                    <tr><td>Dash Slash</td><td>Q/F</td><td>Dash forward cutting (2 charges)</td></tr>
+                    <tr><td>Shuriken Burst</td><td>Q/F</td><td>3 auto-aiming blades</td></tr>
+                    <tr><td>Blade Storm</td><td>E (Ult)</td><td>Rapid multi-dash attack</td></tr>
+                </table>
+                <p class="playstyle"><strong>Playstyle:</strong> Close the gap quickly, burst down targets, and escape before retaliation.</p>
+            </div>
+
+            <div class="hero-card">
+                <h3>💻 BYTE</h3>
+                <p class="hero-tagline">"I see your firewall... how cute."</p>
+                <div class="hero-stats">
+                    <span>Health: 100</span>
+                    <span>Shield: 25</span>
+                    <span>Speed: 0.95x</span>
+                    <span>Role: Control Specialist</span>
+                </div>
+                <table class="wiki-table">
+                    <tr><th>Ability</th><th>Key</th><th>Description</th></tr>
+                    <tr><td>QuickJack</td><td>Passive</td><td>Hack objectives 30% faster</td></tr>
+                    <tr><td>EMP Pulse</td><td>Q/F</td><td>AOE disable + slow</td></tr>
+                    <tr><td>Hack Trap</td><td>Q/F</td><td>Slowing data field (5s)</td></tr>
+                    <tr><td>Override</td><td>E (Ult)</td><td>Control enemy drones (6s)</td></tr>
+                </table>
+                <p class="playstyle"><strong>Playstyle:</strong> Control areas, slow pushes, and support objective play.</p>
+            </div>
+
+            <div class="hero-card">
+                <h3>👁️ GLYPH</h3>
+                <p class="hero-tagline">"Knowledge is power. I know everything."</p>
+                <div class="hero-stats">
+                    <span>Health: 100</span>
+                    <span>Shield: 25</span>
+                    <span>Speed: 1.0x</span>
+                    <span>Role: Vision / Utility</span>
+                </div>
+                <table class="wiki-table">
+                    <tr><th>Ability</th><th>Key</th><th>Description</th></tr>
+                    <tr><td>Recon Drone</td><td>Passive</td><td>Drone reveals nearby enemies</td></tr>
+                    <tr><td>Shock Drone</td><td>Q/F</td><td>Electrify drone to stun</td></tr>
+                    <tr><td>Ping Pulse</td><td>Q/F</td><td>Reveal enemies through walls (3s)</td></tr>
+                    <tr><td>Nano Swarm</td><td>E (Ult)</td><td>DOT drone zone (5s)</td></tr>
+                </table>
+                <p class="playstyle"><strong>Playstyle:</strong> Provide vision for your team and deny enemy intel.</p>
+            </div>
+
+            <div class="hero-card">
+                <h3>🔥 SPARK</h3>
+                <p class="hero-tagline">"Some just want to watch the world burn."</p>
+                <div class="hero-stats">
+                    <span>Health: 100</span>
+                    <span>Shield: 25</span>
+                    <span>Speed: 0.95x</span>
+                    <span>Role: Area Denial</span>
+                </div>
+                <table class="wiki-table">
+                    <tr><th>Ability</th><th>Key</th><th>Description</th></tr>
+                    <tr><td>Fireproof</td><td>Passive</td><td>Immune to fire damage</td></tr>
+                    <tr><td>Plasma Fire Bottle</td><td>Q/F</td><td>Burning zone (2 charges, 4s)</td></tr>
+                    <tr><td>Thermal Burst</td><td>Q/F</td><td>Clear smoke/holograms</td></tr>
+                    <tr><td>Thermal Overdrive</td><td>E (Ult)</td><td>Massive fire wave</td></tr>
+                </table>
+                <p class="playstyle"><strong>Playstyle:</strong> Control choke points and deny areas with persistent fire.</p>
+            </div>
+
+            <div class="hero-card">
+                <h3>🎯 ZERO</h3>
+                <p class="hero-tagline">"One shot. One kill."</p>
+                <div class="hero-stats">
+                    <span>Health: 90</span>
+                    <span>Shield: 0</span>
+                    <span>Speed: 1.0x</span>
+                    <span>Role: Sniper / Scout</span>
+                </div>
+                <table class="wiki-table">
+                    <tr><th>Ability</th><th>Key</th><th>Description</th></tr>
+                    <tr><td>Scoped Precision</td><td>Passive</td><td>+10% critical hit chance</td></tr>
+                    <tr><td>Mark Target</td><td>Q/F</td><td>Tag enemy for bonus damage</td></tr>
+                    <tr><td>Dash Back</td><td>Q/F</td><td>Quick backward escape</td></tr>
+                    <tr><td>Rail Beam</td><td>E (Ult)</td><td>Long-range instant hitscan</td></tr>
+                </table>
+                <p class="playstyle"><strong>Playstyle:</strong> Hold angles, eliminate key targets, and reposition constantly.</p>
+            </div>
+
+            <div class="hero-card">
+                <h3>💊 MIRA</h3>
+                <p class="hero-tagline">"I'll patch you up... for a price."</p>
+                <div class="hero-stats">
+                    <span>Health: 100</span>
+                    <span>Shield: 25</span>
+                    <span>Speed: 1.0x</span>
+                    <span>Role: Medic / Support</span>
+                </div>
+                <table class="wiki-table">
+                    <tr><th>Ability</th><th>Key</th><th>Description</th></tr>
+                    <tr><td>Auto-Heal</td><td>Passive</td><td>Regen 2% HP/s out of combat</td></tr>
+                    <tr><td>Nano-Heal Field</td><td>Q/F</td><td>Heal zone for allies (4s)</td></tr>
+                    <tr><td>Shield Burst</td><td>Q/F</td><td>Temp shields to allies (3s)</td></tr>
+                    <tr><td>Resync</td><td>E (Ult)</td><td>Instant revive ally</td></tr>
+                </table>
+                <p class="playstyle"><strong>Playstyle:</strong> Keep your team alive and turn fights with clutch heals.</p>
+            </div>
+        </section>
+
+        <!-- WEAPONS -->
+        <section id="weapons" class="wiki-section">
+            <h2>🔫 Weapons</h2>
+
+            <h3>Starting Weapon</h3>
+            <table class="wiki-table">
+                <tr><th>Weapon</th><th>Price</th><th>Description</th></tr>
+                <tr><td><strong>Burst Pistol</strong></td><td>Free</td><td>3-round burst sidearm. Always available.</td></tr>
+            </table>
+
+            <h3>Purchasable Weapons</h3>
+            <table class="wiki-table">
+                <tr><th>Weapon</th><th>Price</th><th>Description</th></tr>
+                <tr><td><strong>Neo SMG-9</strong></td><td>$1,100</td><td>High fire rate, low damage. Best for close range.</td></tr>
+                <tr><td><strong>Pulse Rifle</strong></td><td>$1,500</td><td>Balanced assault rifle. Reliable at all ranges.</td></tr>
+                <tr><td><strong>Scatter Shot</strong></td><td>$1,400</td><td>Powerful shotgun. Devastating up close.</td></tr>
+                <tr><td><strong>Rail Sniper</strong></td><td>$2,100</td><td>High-damage sniper. One-shot headshots.</td></tr>
+            </table>
+
+            <div class="tips-box">
+                <h4>💡 Weapon Tips</h4>
+                <ul>
+                    <li>Weapons are purchased each round using the <strong>Buy Menu (B)</strong></li>
+                    <li>Purchased weapons persist until you die</li>
+                    <li>Headshots deal bonus damage</li>
+                    <li>Each weapon has unique recoil patterns—learn them!</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ECONOMY -->
+        <section id="economy" class="wiki-section">
+            <h2>💰 Economy System</h2>
+
+            <h3>Earning Credits</h3>
+            <table class="wiki-table">
+                <tr><th>Action</th><th>Credits</th></tr>
+                <tr><td>Kill</td><td>+$300</td></tr>
+                <tr><td>Assist</td><td>+$150</td></tr>
+                <tr><td>Round Win</td><td>+$500</td></tr>
+                <tr><td>Round Loss</td><td>+$200</td></tr>
+                <tr><td>Loss Streak Bonus</td><td>+$100 per consecutive loss</td></tr>
+            </table>
+
+            <h3>Spending Credits</h3>
+            <ul>
+                <li>Access the <strong>Buy Menu</strong> by pressing <code>B</code> during the buy phase</li>
+                <li>Weapons cost between $1,100 - $2,100</li>
+                <li>Plan your economy—sometimes saving (eco round) is the right call</li>
+            </ul>
+        </section>
+
+        <!-- MECHANICS -->
+        <section id="mechanics" class="wiki-section">
+            <h2>⚙️ Game Mechanics</h2>
+
+            <h3>Health & Shields</h3>
+            <ul>
+                <li><strong>Health:</strong> Your main HP pool. When it hits 0, you're eliminated.</li>
+                <li><strong>Shields:</strong> Absorbs damage before health. Some heroes have natural shields.</li>
+                <li><strong>Regeneration:</strong> Only Mira has passive health regen (out of combat).</li>
+            </ul>
+
+            <h3>Movement</h3>
+            <ul>
+                <li><strong>Base Speed:</strong> 250 units/second (modified by hero speed multiplier)</li>
+                <li><strong>Strafing:</strong> Full speed in all directions</li>
+                <li><strong>No Sprinting:</strong> Consistent movement speed at all times</li>
+            </ul>
+
+            <h3>Combat</h3>
+            <ul>
+                <li><strong>Hitscan Weapons:</strong> Instant bullet travel (no travel time)</li>
+                <li><strong>Headshots:</strong> 2x damage multiplier</li>
+                <li><strong>Damage Falloff:</strong> Some weapons deal less damage at range</li>
+                <li><strong>Armor:</strong> Reduces incoming damage by a percentage</li>
+            </ul>
+
+            <h3>Abilities</h3>
+            <ul>
+                <li><strong>Cooldowns:</strong> Abilities have individual cooldown timers</li>
+                <li><strong>Charges:</strong> Some abilities have multiple charges (e.g., Katana's Dash Slash)</li>
+                <li><strong>Ultimates:</strong> Build ultimate charge through combat and objective play</li>
+            </ul>
+        </section>
+
+        <!-- TIPS -->
+        <section id="tips" class="wiki-section">
+            <h2>💡 Tips & Strategies</h2>
+
+            <div class="tips-box">
+                <h4>General Tips</h4>
+                <ol>
+                    <li><strong>Use Cover:</strong> Peek, shoot, retreat. Don't stand in the open.</li>
+                    <li><strong>Communicate:</strong> Call out enemy positions to your team.</li>
+                    <li><strong>Economy Management:</strong> Don't force-buy every round. Coordinate eco rounds.</li>
+                    <li><strong>Ability Timing:</strong> Save abilities for key moments, don't waste them.</li>
+                    <li><strong>Crosshair Placement:</strong> Keep your crosshair at head level.</li>
+                </ol>
+            </div>
+
+            <h3>Team Composition</h3>
+            <p>A balanced team typically includes:</p>
+            <ul>
+                <li>1 Tank (Vanta)</li>
+                <li>1-2 DPS (Katana, Zero)</li>
+                <li>1 Support/Utility (Mira, Glyph)</li>
+                <li>1 Controller (Byte, Spark)</li>
+            </ul>
+
+            <h3>Map Awareness</h3>
+            <ul>
+                <li>Learn common angles and peek spots</li>
+                <li>Use audio cues to track enemy positions</li>
+                <li>Control key choke points with area-denial abilities</li>
+            </ul>
+
+            <h3>Hero Synergies</h3>
+            <div class="synergy-grid">
+                <div class="synergy-item">
+                    <span class="combo">Vanta + Mira</span>
+                    <span>Unkillable frontline with heals</span>
+                </div>
+                <div class="synergy-item">
+                    <span class="combo">Glyph + Katana</span>
+                    <span>Intel leads to assassination</span>
+                </div>
+                <div class="synergy-item">
+                    <span class="combo">Byte + Spark</span>
+                    <span>Total area lockdown</span>
+                </div>
+                <div class="synergy-item">
+                    <span class="combo">Spectre + Zero</span>
+                    <span>Flanking intel for sniper picks</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- RANKS -->
+        <section class="wiki-section">
+            <h2>🏅 Ranks & Progression</h2>
+            <p><em>Coming Soon: Competitive ranked mode with skill-based matchmaking.</em></p>
+        </section>
+
+        <!-- COMMUNITY -->
+        <section class="wiki-section">
+            <h2>📞 Community</h2>
+            <p>Join the fight and connect with other operatives:</p>
+            <ul>
+                <li><strong>Report Bugs:</strong> Help us improve the Grid</li>
+                <li><strong>Share Strategies:</strong> Post your best plays</li>
+                <li><strong>Find Teams:</strong> Group up for competitive matches</li>
+            </ul>
+        </section>
+
+        <!-- Footer -->
+        <footer class="wiki-footer">
+            <p class="quote">"See you on the Grid, Operative."</p>
+            <p class="team">— CyberGrid Assault Team</p>
+        </footer>
+    </div>
+</body>
+</html>
