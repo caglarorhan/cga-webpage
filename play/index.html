@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberGrid Assault</title>
+  <link rel="icon" type="image/x-icon" href="/assets/logo/favicon.ico">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: #0a0a12;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    #game-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    #game-canvas {
+      background: #12121a;
+      border: 2px solid #0CE5F0;
+      box-shadow: 0 0 20px rgba(12, 229, 240, 0.3);
+    }
+    
+    #ui-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    
+    #debug-info {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: #0CE5F0;
+      font-size: 12px;
+      font-family: monospace;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+    
+    #connection-ui {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(10, 10, 18, 0.95);
+      border: 2px solid #0CE5F0;
+      padding: 30px;
+      border-radius: 8px;
+      text-align: center;
+      pointer-events: auto;
+    }
+    
+    #version-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: linear-gradient(135deg, #F02BFF, #0CE5F0);
+      color: #000;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    #connection-ui h2 {
+      color: #0CE5F0;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    
+    #connection-ui input,
+    #connection-ui button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    #connection-ui input {
+      background: #1a1a2e;
+      color: #fff;
+      border: 1px solid #333;
+    }
+    
+    #connection-ui button {
+      background: linear-gradient(135deg, #0CE5F0, #F02BFF);
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    #connection-ui button:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px rgba(12, 229, 240, 0.5);
+    }
+    
+    #join-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    #join-buttons button {
+      flex: 1;
+      margin: 0;
+    }
+    
+    #btn-back {
+      background: linear-gradient(135deg, #444, #666) !important;
+      color: #fff !important;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+
+    /* Pause Menu */
+    #pause-menu {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(10, 10, 18, 0.98);
+      border: 2px solid #F02BFF;
+      padding: 30px;
+      border-radius: 8px;
+      min-width: 320px;
+      text-align: center;
+      pointer-events: auto;
+      z-index: 200;
+    }
+    
+    #pause-menu h2 {
+      color: #F02BFF;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 24px;
+    }
+    
+    #pause-menu .pause-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+    
+    #pause-menu button {
+      padding: 14px 20px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    #btn-resume {
+      background: linear-gradient(135deg, #0CE5F0, #00ff88);
+      color: #000;
+    }
+    
+    #btn-quit {
+      background: #333;
+      color: #fff;
+    }
+    
+    #pause-menu button:hover {
+      transform: scale(1.02);
+    }
+    
+    #btn-resume:hover {
+      box-shadow: 0 0 20px rgba(12, 229, 240, 0.5);
+    }
+    
+    #pause-menu .pause-settings {
+      border-top: 1px solid #333;
+      padding-top: 20px;
+    }
+    
+    #pause-menu .setting-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+    
+    #pause-menu .setting-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #888;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    
+    #pause-menu .setting-group label input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #F02BFF;
+      cursor: pointer;
+    }
+    
+    #pause-menu .setting-group .setting-value {
+      color: #F02BFF;
+      margin-left: auto;
+      font-weight: bold;
+    }
+    
+    #pause-menu .setting-group input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #1a1a2e;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    
+    #pause-menu .setting-group input[type="range"]:disabled {
+      opacity: 0.4;
+    }
+    
+    #pause-menu .setting-group input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #F02BFF, #0CE5F0);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(240, 43, 255, 0.5);
+    }
+
+    /* Buy Menu */
+    #buy-menu {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(10, 10, 18, 0.95);
+      border: 2px solid #FFE500;
+      padding: 25px;
+      border-radius: 8px;
+      min-width: 400px;
+      pointer-events: auto;
+      z-index: 150;
+    }
+    
+    #buy-menu h2 {
+      color: #FFE500;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 20px;
+      text-align: center;
+    }
+    
+    #buy-menu .credits-display {
+      text-align: center;
+      color: #FFE500;
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px rgba(255, 229, 0, 0.5);
+    }
+    
+    #buy-menu .weapon-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    #buy-menu .weapon-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 15px;
+      background: rgba(30, 30, 40, 0.8);
+      border: 1px solid #333;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    #buy-menu .weapon-item:hover {
+      border-color: #0CE5F0;
+      background: rgba(12, 229, 240, 0.1);
+    }
+    
+    #buy-menu .weapon-item.owned {
+      border-color: #00ff88;
+      background: rgba(0, 255, 136, 0.1);
+    }
+    
+    #buy-menu .weapon-item.owned:hover {
+      cursor: default;
+    }
+    
+    #buy-menu .weapon-item.cant-afford {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    #buy-menu .weapon-info {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    #buy-menu .weapon-name {
+      color: #fff;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    #buy-menu .weapon-stats {
+      color: #888;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+    
+    #buy-menu .weapon-price {
+      color: #FFE500;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    #buy-menu .weapon-item.owned .weapon-price {
+      color: #00ff88;
+    }
+    
+    #buy-menu .buy-hint {
+      text-align: center;
+      color: #666;
+      font-size: 12px;
+      margin-top: 15px;
+    }
+
+    /* Help/Controls Panel */
+    #help-panel {
+      position: absolute;
+      bottom: 80px;
+      left: 20px;
+      background: rgba(10, 10, 18, 0.9);
+      border: 2px solid #0CE5F0;
+      border-radius: 8px;
+      padding: 15px 20px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+
+    #help-panel.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    #help-panel h3 {
+      color: #0CE5F0;
+      font-size: 14px;
+      margin: 0 0 12px 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border-bottom: 1px solid rgba(12, 229, 240, 0.3);
+      padding-bottom: 8px;
+    }
+
+    #help-panel .controls-grid {
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: 6px 20px;
+    }
+
+    #help-panel .key {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(240, 43, 255, 0.3), rgba(12, 229, 240, 0.3));
+      border: 1px solid #F02BFF;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-family: monospace;
+      font-size: 12px;
+      color: #fff;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    #help-panel .action {
+      color: #aaa;
+      font-size: 12px;
+    }
+
+    #help-panel .hint {
+      margin-top: 12px;
+      color: #666;
+      font-size: 10px;
+      text-align: center;
+      border-top: 1px solid rgba(12, 229, 240, 0.2);
+      padding-top: 8px;
+    }
+
+    /* Settings Button */
+    #btn-settings {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 40px;
+      height: 40px;
+      background: rgba(10, 10, 18, 0.9);
+      border: 2px solid #0CE5F0;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      pointer-events: auto;
+    }
+    
+    #btn-settings:hover {
+      background: rgba(12, 229, 240, 0.2);
+      box-shadow: 0 0 15px rgba(12, 229, 240, 0.5);
+    }
+    
+    #btn-settings svg {
+      width: 24px;
+      height: 24px;
+      fill: #0CE5F0;
+    }
+
+    /* Settings Panel */
+    #settings-panel {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(10, 10, 18, 0.98);
+      border: 2px solid #0CE5F0;
+      padding: 30px;
+      border-radius: 8px;
+      min-width: 750px;
+      max-height: 85vh;
+      overflow-y: auto;
+      pointer-events: auto;
+      z-index: 100;
+    }
+    
+    #settings-panel .settings-columns {
+      display: flex;
+      gap: 40px;
+    }
+    
+    #settings-panel .settings-column {
+      flex: 1;
+      min-width: 300px;
+    }
+    
+    #settings-panel h2 {
+      color: #0CE5F0;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      font-size: 18px;
+    }
+    
+    .setting-group {
+      margin-bottom: 20px;
+    }
+    
+    .setting-group label {
+      display: block;
+      color: #888;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    
+    .setting-group .setting-value {
+      color: #0CE5F0;
+      float: right;
+      font-weight: bold;
+    }
+    
+    .setting-group input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #1a1a2e;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    
+    .setting-group input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0CE5F0, #F02BFF);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(12, 229, 240, 0.5);
+    }
+    
+    .setting-group select {
+      width: 100%;
+      padding: 10px;
+      background: #1a1a2e;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .setting-group select:focus {
+      border-color: #0CE5F0;
+      outline: none;
+    }
+    
+    .ability-bindings {
+      border-top: 1px solid #333;
+      padding-top: 15px;
+      margin-top: 15px;
+    }
+    
+    .ability-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .ability-row .key-label {
+      color: #0CE5F0;
+      font-weight: bold;
+      min-width: 50px;
+      font-size: 13px;
+    }
+    
+    .ability-row select {
+      width: 100px;
+      padding: 6px;
+      background: #1a1a2e;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 12px;
+    }
+    
+    .ability-row .ability-name {
+      color: #888;
+      font-size: 11px;
+      flex: 1;
+      text-align: right;
+    }
+
+    #settings-panel .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+    }
+    
+    #settings-panel button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    #btn-settings-save {
+      background: linear-gradient(135deg, #0CE5F0, #F02BFF);
+      color: #000;
+    }
+    
+    #btn-settings-close {
+      background: #333;
+      color: #fff;
+    }
+    
+    #settings-panel button:hover {
+      transform: scale(1.02);
+    }
+
+    /* Round Over Panel */
+    #round-over-panel {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(10, 10, 18, 0.95);
+      border: 3px solid #FFD700;
+      padding: 40px 50px;
+      border-radius: 12px;
+      text-align: center;
+      pointer-events: auto;
+      z-index: 150;
+      min-width: 350px;
+      box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+    }
+    
+    #round-over-panel h2 {
+      color: #FFD700;
+      font-size: 32px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+    
+    #round-over-panel .winner-text {
+      color: #fff;
+      font-size: 18px;
+      margin-bottom: 30px;
+      letter-spacing: 1px;
+    }
+    
+    #round-over-panel .winner-text.attackers {
+      color: #0CE5F0;
+    }
+    
+    #round-over-panel .winner-text.defenders {
+      color: #F02BFF;
+    }
+    
+    #round-over-panel .score-display {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    
+    #round-over-panel .score-team {
+      text-align: center;
+    }
+    
+    #round-over-panel .score-team .team-name {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+    }
+    
+    #round-over-panel .score-team.attackers .team-name {
+      color: #0CE5F0;
+    }
+    
+    #round-over-panel .score-team.defenders .team-name {
+      color: #F02BFF;
+    }
+    
+    #round-over-panel .score-team .score-value {
+      font-size: 48px;
+      font-weight: bold;
+      color: #fff;
+    }
+    
+    #round-over-panel .match-info {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    #round-over-panel .countdown-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: rgba(0, 255, 255, 0.1);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 8px;
+    }
+    
+    #countdown-text {
+      font-size: 24px;
+      font-weight: bold;
+      color: #00FFFF;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+    
+    #countdown-text.paused {
+      color: #FFD700;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+    
+    #btn-pause-countdown {
+      padding: 10px 25px;
+      background: rgba(0, 255, 255, 0.2);
+      border: 1px solid #00FFFF;
+      border-radius: 6px;
+      color: #00FFFF;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    #btn-pause-countdown:hover {
+      background: rgba(0, 255, 255, 0.3);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+    }
+    
+    #btn-pause-countdown.paused {
+      background: rgba(255, 215, 0, 0.2);
+      border-color: #FFD700;
+      color: #FFD700;
+    }
+    
+    #round-over-panel .round-over-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    #round-over-panel button {
+      padding: 14px 30px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    #btn-play-again {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #000;
+    }
+    
+    #btn-play-again:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+    }
+    
+    #btn-main-menu {
+      background: #333;
+      color: #fff;
+    }
+    
+    #btn-main-menu:hover {
+      transform: scale(1.02);
+      background: #444;
+    }
+
+    /* Room Code Display */
+    #room-code-display {
+      position: absolute;
+      top: 10px;
+      right: 60px;
+      background: rgba(10, 10, 18, 0.9);
+      border: 2px solid #00ff88;
+      padding: 8px 15px;
+      border-radius: 8px;
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    #room-code-display .label {
+      color: #888;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    #room-code-display .code {
+      color: #00ff88;
+      font-size: 18px;
+      font-weight: bold;
+      font-family: monospace;
+      letter-spacing: 3px;
+      text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+    }
+    
+    #room-code-display .copy-btn {
+      background: none;
+      border: 1px solid #00ff88;
+      color: #00ff88;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    
+    #room-code-display .copy-btn:hover {
+      background: rgba(0, 255, 136, 0.2);
+    }
+    
+    #room-code-display .copy-btn.copied {
+      background: #00ff88;
+      color: #000;
+    }
+
+    /* Lobby Screen */
+    #lobby-screen {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(10, 10, 18, 0.98);
+      border: 2px solid #00ff88;
+      padding: 40px;
+      border-radius: 12px;
+      text-align: center;
+      pointer-events: auto;
+      width: 450px;
+      box-shadow: 0 0 40px rgba(0, 255, 136, 0.2);
+    }
+    
+    #lobby-screen h2 {
+      color: #00ff88;
+      font-size: 24px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+    
+    #lobby-screen .room-code-large {
+      background: #1a1a2e;
+      border: 2px dashed #00ff88;
+      padding: 20px 30px;
+      border-radius: 8px;
+      margin: 20px 0;
+      min-width: 320px;
+    }
+    
+    #lobby-screen .room-code-large .label {
+      color: #888;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    
+    #lobby-screen .room-code-large .code {
+      color: #00ff88;
+      font-size: 42px;
+      font-weight: bold;
+      font-family: monospace;
+      letter-spacing: 8px;
+      text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+      min-width: 280px;
+      display: inline-block;
+      text-align: center;
+    }
+    
+    #lobby-screen .room-code-large .code:hover {
+      text-shadow: 0 0 30px rgba(0, 255, 136, 0.8);
+      transform: scale(1.05);
+    }
+    
+    #lobby-screen .room-code-large .code:active {
+      transform: scale(0.98);
+    }
+    
+    #lobby-screen .room-code-large .code.copied {
+      color: #fff;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+    
+    #lobby-screen .room-code-large .click-hint {
+      color: #666;
+      font-size: 11px;
+      margin-top: 8px;
+      opacity: 0.8;
+    }
+    
+    #lobby-screen .player-count {
+      color: #fff;
+      font-size: 18px;
+      margin: 25px 0;
+    }
+    
+    #lobby-screen .player-count .current {
+      color: #0CE5F0;
+      font-weight: bold;
+      font-size: 24px;
+    }
+    
+    #lobby-screen .player-count .max {
+      color: #888;
+    }
+    
+    #lobby-screen .player-list {
+      background: #12121a;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 20px 0;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    
+    #lobby-screen .player-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      margin: 5px 0;
+      background: #1a1a2e;
+      border-radius: 4px;
+      border-left: 3px solid #0CE5F0;
+    }
+    
+    #lobby-screen .player-item.host {
+      border-left-color: #00ff88;
+    }
+    
+    #lobby-screen .player-item .name {
+      color: #fff;
+      font-size: 14px;
+    }
+    
+    #lobby-screen .player-item .tag {
+      color: #00ff88;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    #lobby-screen .countdown {
+      font-size: 64px;
+      font-weight: bold;
+      color: #FFD700;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+      margin: 20px 0;
+    }
+    
+    #lobby-screen .waiting-text {
+      color: #888;
+      font-size: 14px;
+      margin: 15px 0;
+    }
+    
+    #lobby-screen .waiting-text .dots {
+      animation: dots 1.5s infinite;
+    }
+    
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+    
+    #lobby-screen .lobby-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    
+    #lobby-screen button {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    #btn-start-game {
+      background: linear-gradient(135deg, #00ff88, #0CE5F0);
+      color: #000;
+    }
+    
+    #btn-start-game:hover:not(:disabled) {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+    }
+    
+    #btn-start-game:disabled {
+      background: #333;
+      color: #666;
+      cursor: not-allowed;
+    }
+    
+    #btn-copy-lobby-code {
+      background: #1a1a2e;
+      color: #00ff88;
+      border: 2px solid #00ff88;
+    }
+    
+    #btn-copy-lobby-code:hover {
+      background: rgba(0, 255, 136, 0.1);
+    }
+    
+    #btn-leave-lobby {
+      background: #333;
+      color: #fff;
+    }
+    
+    #btn-leave-lobby:hover {
+      background: #444;
+    }
+
+    /* Host settings in lobby */
+    #lobby-screen .host-settings {
+      background: #12121a;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      text-align: left;
+    }
+    
+    #lobby-screen .host-settings label {
+      display: block;
+      color: #888;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    
+    #lobby-screen .host-settings select {
+      width: 100%;
+      padding: 10px;
+      background: #1a1a2e;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 14px;
+    }
+  </style>
+  <script type="module" crossorigin src="/assets/index-CWilFnSb.js"></script>
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="game-canvas"></canvas>
+    <div id="ui-overlay">
+      <div id="debug-info"></div>
+      
+      <!-- Room Code Display (shown during hosting) -->
+      <div id="room-code-display" class="hidden">
+        <span class="label">Room</span>
+        <span class="code" id="room-code-text">----</span>
+        <button class="copy-btn" id="btn-copy-code">Copy</button>
+      </div>
+      
+      <!-- Settings Button -->
+      <button id="btn-settings" title="Settings">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Settings Panel -->
+    <div id="settings-panel" class="hidden">
+      <h2>⚙️ Game Settings</h2>
+      
+      <div class="settings-columns">
+        <!-- Left Column: Game Settings -->
+        <div class="settings-column">
+          <h3 style="color: #0ff; margin: 0 0 15px 0; font-size: 14px;">🎮 Game Options</h3>
+          
+          <div class="setting-group">
+            <label>Enemy Bots <span class="setting-value" id="bot-count-value">3</span></label>
+            <input type="range" id="setting-bot-count" min="0" max="7" value="3">
+          </div>
+          
+          <div class="setting-group">
+            <label>Bot Difficulty</label>
+            <select id="setting-bot-difficulty">
+              <option value="easy">Easy</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+      
+      <div class="setting-group">
+        <label>Friendly Bots <span class="setting-value" id="friendly-bot-count-value">0</span></label>
+        <input type="range" id="setting-friendly-bots" min="0" max="7" value="0">
+      </div>
+      
+      <div class="setting-group">
+        <label>Bot AI Mode</label>
+        <select id="setting-ai-mode">
+          <option value="rule_based" selected>Rule-Based (Classic)</option>
+          <option value="slm" disabled>SLM (Coming Soon)</option>
+        </select>
+        <span class="setting-hint" id="ai-mode-hint" style="font-size: 10px; color: #888;">SLM uses browser-based AI for smarter bots</span>
+      </div>
+      
+      <div class="setting-group">
+        <label>Game Mode</label>
+        <select id="setting-game-mode">
+          <option value="deathmatch" selected>Neon Deathmatch</option>
+          <option value="spike">Data Spike Assault</option>
+        </select>
+      </div>
+      
+      <div class="setting-group">
+        <label>Map</label>
+        <select id="setting-map">
+          <!-- Maps populated dynamically based on game mode -->
+        </select>
+        <span class="setting-hint" id="map-hint"></span>
+      </div>
+      
+      <div class="setting-group">
+        <label>Hero</label>
+        <select id="setting-hero">
+          <option value="vanta" selected>Vanta (Tank)</option>
+          <option value="spectre">Spectre (Flanker)</option>
+          <option value="katana">Katana (Assassin)</option>
+          <option value="byte">Byte (Controller)</option>
+          <option value="glyph">Glyph (Vision)</option>
+          <option value="spark">Spark (Area Denial)</option>
+          <option value="zero">Zero (Sniper)</option>
+          <option value="mira">Mira (Medic)</option>
+        </select>
+      </div>
+      
+      <div class="setting-group ability-bindings">
+        <label>Ability Bindings</label>
+        <div class="ability-row">
+          <span class="key-label">Q Key:</span>
+          <select id="setting-ability-q">
+            <option value="1" selected>Ability 1</option>
+            <option value="2">Ability 2</option>
+          </select>
+          <span class="ability-name" id="ability-q-name">Energy Shield</span>
+        </div>
+        <div class="ability-row">
+          <span class="key-label">F Key:</span>
+          <select id="setting-ability-f">
+            <option value="1">Ability 1</option>
+            <option value="2" selected>Ability 2</option>
+          </select>
+          <span class="ability-name" id="ability-f-name">Shockwave Slam</span>
+        </div>
+      </div>
+        </div>
+        
+        <!-- Right Column: Audio Settings -->
+        <div class="settings-column">
+          <h3 style="color: #0ff; margin: 0 0 15px 0; font-size: 14px;">🔊 Audio Settings</h3>
+      
+      <div class="setting-group">
+        <label>
+          <input type="checkbox" id="settings-audio-master-enabled" checked style="width: 16px; height: 16px; accent-color: #F02BFF; cursor: pointer; margin-right: 8px;">
+          Master Volume <span class="setting-value" id="settings-audio-master-value">80%</span>
+        </label>
+        <input type="range" id="settings-audio-master-volume" min="0" max="100" value="80">
+      </div>
+      
+      <div class="setting-group">
+        <label>
+          <input type="checkbox" id="settings-audio-music-enabled" checked style="width: 16px; height: 16px; accent-color: #F02BFF; cursor: pointer; margin-right: 8px;">
+          Music <span class="setting-value" id="settings-audio-music-value">50%</span>
+        </label>
+        <input type="range" id="settings-audio-music-volume" min="0" max="100" value="50">
+      </div>
+      
+      <div class="setting-group">
+        <label>
+          <input type="checkbox" id="settings-audio-sfx-enabled" checked style="width: 16px; height: 16px; accent-color: #F02BFF; cursor: pointer; margin-right: 8px;">
+          Sound Effects <span class="setting-value" id="settings-audio-sfx-value">80%</span>
+        </label>
+        <input type="range" id="settings-audio-sfx-volume" min="0" max="100" value="80">
+      </div>
+      
+      <div class="setting-group">
+        <label>
+          <input type="checkbox" id="settings-audio-voice-enabled" checked style="width: 16px; height: 16px; accent-color: #F02BFF; cursor: pointer; margin-right: 8px;">
+          Voice/Announcer <span class="setting-value" id="settings-audio-voice-value">100%</span>
+        </label>
+        <input type="range" id="settings-audio-voice-volume" min="0" max="100" value="100">
+      </div>
+      
+      <div class="setting-group">
+        <label>
+          <input type="checkbox" id="settings-audio-ui-enabled" checked style="width: 16px; height: 16px; accent-color: #F02BFF; cursor: pointer; margin-right: 8px;">
+          UI Sounds <span class="setting-value" id="settings-audio-ui-value">70%</span>
+        </label>
+        <input type="range" id="settings-audio-ui-volume" min="0" max="100" value="70">
+      </div>
+        </div>
+      </div>
+      
+      <div class="btn-row">
+        <button id="btn-settings-close">Cancel</button>
+        <button id="btn-settings-save">Save</button>
+      </div>
+    </div>
+    
+    <!-- Round Over Panel -->
+    <div id="round-over-panel" class="hidden">
+      <h2>🏆 Round Over</h2>
+      <div class="winner-text" id="winner-text">Attackers Win!</div>
+      <div class="match-info" id="match-info">First to 3 wins</div>
+      <div class="score-display">
+        <div class="score-team attackers">
+          <div class="team-name">Attackers</div>
+          <div class="score-value" id="score-attackers">0</div>
+        </div>
+        <div class="score-team defenders">
+          <div class="team-name">Defenders</div>
+          <div class="score-value" id="score-defenders">0</div>
+        </div>
+      </div>
+      <div id="countdown-display" class="countdown-display">
+        <div id="countdown-text">Next round in 10s</div>
+        <button id="btn-pause-countdown">⏸️ Pause</button>
+      </div>
+      <div class="round-over-buttons">
+        <button id="btn-play-again" class="hidden">Play Again</button>
+        <button id="btn-main-menu">Main Menu</button>
+      </div>
+    </div>
+
+    <!-- Pause Menu (in-game) -->
+    <div id="pause-menu" class="hidden">
+      <h2>⏸️ Paused</h2>
+      
+      <div class="pause-buttons">
+        <button id="btn-resume">Resume</button>
+        <button id="btn-quit">Quit to Menu</button>
+      </div>
+      
+      <div class="pause-settings">
+        <h3 style="color: #0ff; margin: 10px 0 15px 0; font-size: 14px;">🔊 Audio Settings</h3>
+        
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="audio-master-enabled" checked>
+            Master Volume <span class="setting-value" id="audio-master-value">80%</span>
+          </label>
+          <input type="range" id="audio-master-volume" min="0" max="100" value="80">
+        </div>
+        
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="audio-music-enabled" checked>
+            Music <span class="setting-value" id="audio-music-value">50%</span>
+          </label>
+          <input type="range" id="audio-music-volume" min="0" max="100" value="50">
+        </div>
+        
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="audio-sfx-enabled" checked>
+            Sound Effects <span class="setting-value" id="audio-sfx-value">80%</span>
+          </label>
+          <input type="range" id="audio-sfx-volume" min="0" max="100" value="80">
+        </div>
+        
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="audio-voice-enabled" checked>
+            Voice/Announcer <span class="setting-value" id="audio-voice-value">100%</span>
+          </label>
+          <input type="range" id="audio-voice-volume" min="0" max="100" value="100">
+        </div>
+        
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="audio-ui-enabled" checked>
+            UI Sounds <span class="setting-value" id="audio-ui-value">70%</span>
+          </label>
+          <input type="range" id="audio-ui-volume" min="0" max="100" value="70">
+        </div>
+        
+        <h3 style="color: #0ff; margin: 20px 0 15px 0; font-size: 14px;">⚙️ Other Settings</h3>
+        
+        <div class="setting-group">
+          <label>Mouse Sensitivity <span class="setting-value" id="sensitivity-value">1.0</span></label>
+          <input type="range" id="setting-sensitivity" min="1" max="20" value="10">
+        </div>
+        
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="setting-fps" checked>
+            Show FPS/Debug Info
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help/Controls Panel (press H in-game) -->
+    <div id="help-panel">
+      <h3>⌨️ Controls</h3>
+      <div class="controls-grid">
+        <span class="key">W A S D</span><span class="action">Move</span>
+        <span class="key">Mouse</span><span class="action">Aim</span>
+        <span class="key">LMB</span><span class="action">Shoot</span>
+        <span class="key">RMB</span><span class="action">Reload</span>
+        <span class="key">R</span><span class="action">Reload</span>
+        <span class="key">Scroll</span><span class="action">Switch Weapon</span>
+        <span class="key">1-5</span><span class="action">Switch Weapon</span>
+        <span class="key">B</span><span class="action">Buy Menu</span>
+        <span class="key">Q</span><span class="action">Ability 1</span>
+        <span class="key">F</span><span class="action">Ability 2</span>
+        <span class="key">X</span><span class="action">Ultimate</span>
+        <span class="key">ESC</span><span class="action">Pause Menu</span>
+        <span class="key">H</span><span class="action">Toggle Help</span>
+      </div>
+      <div class="hint">Press H to hide</div>
+    </div>
+
+    <!-- Buy Menu (press B in-game) -->
+    <div id="buy-menu" class="hidden">
+      <h2>🛒 Weapon Shop</h2>
+      <div class="credits-display">$<span id="buy-credits">800</span></div>
+      <div class="weapon-list">
+        <div class="weapon-item" data-weapon="burst_pistol" data-slot="1">
+          <div class="weapon-info">
+            <span class="weapon-name">[1] Burst Pistol</span>
+            <span class="weapon-stats">DMG: 25 | ROF: 4/s | Free starter</span>
+          </div>
+          <span class="weapon-price">FREE</span>
+        </div>
+        <div class="weapon-item" data-weapon="neo_smg9" data-slot="2">
+          <div class="weapon-info">
+            <span class="weapon-name">[2] Neo SMG-9</span>
+            <span class="weapon-stats">DMG: 18 | ROF: 12/s | High fire rate</span>
+          </div>
+          <span class="weapon-price">$1100</span>
+        </div>
+        <div class="weapon-item" data-weapon="pulse_rifle" data-slot="3">
+          <div class="weapon-info">
+            <span class="weapon-name">[3] Pulse Rifle</span>
+            <span class="weapon-stats">DMG: 35 | ROF: 6/s | Balanced</span>
+          </div>
+          <span class="weapon-price">$1500</span>
+        </div>
+        <div class="weapon-item" data-weapon="scatter_shot" data-slot="4">
+          <div class="weapon-info">
+            <span class="weapon-name">[4] Scatter Shot</span>
+            <span class="weapon-stats">DMG: 15x8 | ROF: 1.2/s | Shotgun</span>
+          </div>
+          <span class="weapon-price">$1400</span>
+        </div>
+        <div class="weapon-item" data-weapon="rail_sniper" data-slot="5">
+          <div class="weapon-info">
+            <span class="weapon-name">[5] Rail Sniper</span>
+            <span class="weapon-stats">DMG: 120 | ROF: 0.8/s | One-shot</span>
+          </div>
+          <span class="weapon-price">$2100</span>
+        </div>
+      </div>
+      <div class="buy-hint">Press B to close | Click weapon to buy</div>
+    </div>
+    
+    <div id="connection-ui">
+      <div id="version-badge">v0.5.0-beta</div>
+      <h2>CyberGrid Assault</h2>
+      <input type="text" id="player-name" placeholder="Enter your callsign..." maxlength="16">
+      <button id="btn-host">Host Game</button>
+      <button id="btn-join">Join Game</button>
+      <input type="text" id="room-code" placeholder="Room code..." class="hidden">
+      <div id="join-buttons" class="hidden">
+        <button id="btn-back">← Back</button>
+        <button id="btn-connect">Connect</button>
+      </div>
+    </div>
+    
+    <!-- Lobby Screen -->
+    <div id="lobby-screen" class="hidden">
+      <h2>🎮 Game Lobby</h2>
+      
+      <div class="room-code-large">
+        <div class="label">Share this code with friends</div>
+        <div class="code" id="lobby-room-code" title="Click to copy">XXXX00</div>
+        <div class="click-hint">Click code to copy</div>
+      </div>
+      
+      <div class="host-settings" id="host-settings">
+        <label>Players needed to start</label>
+        <select id="lobby-player-count">
+          <option value="1">1 Player (Solo + Bots)</option>
+          <option value="2" selected>2 Players</option>
+          <option value="3">3 Players</option>
+          <option value="4">4 Players</option>
+          <option value="5">5 Players</option>
+          <option value="6">6 Players</option>
+        </select>
+        
+        <label style="margin-top: 15px;">Match Length (First to win)</label>
+        <select id="lobby-round-count">
+          <option value="3">Best of 3 (First to 2)</option>
+          <option value="5" selected>Best of 5 (First to 3)</option>
+          <option value="7">Best of 7 (First to 4)</option>
+          <option value="9">Best of 9 (First to 5)</option>
+          <option value="13">Best of 13 (First to 7)</option>
+        </select>
+      </div>
+      
+      <div class="player-count">
+        <span class="current" id="lobby-current-players">1</span>
+        <span class="max">/ <span id="lobby-max-players">2</span> players</span>
+      </div>
+      
+      <div class="player-list" id="lobby-player-list">
+        <!-- Players will be added here dynamically -->
+      </div>
+      
+      <div class="waiting-text" id="lobby-waiting-text">
+        Waiting for players<span class="dots">...</span>
+      </div>
+      
+      <div class="countdown hidden" id="lobby-countdown">5</div>
+      
+      <div class="lobby-buttons">
+        <button id="btn-leave-lobby">Leave</button>
+        <button id="btn-copy-lobby-code">📋 Copy Code</button>
+        <button id="btn-start-game" disabled>Start Game</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
