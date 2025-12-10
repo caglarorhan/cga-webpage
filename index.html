@@ -733,6 +733,119 @@
             }
         }
 
+        /* ===== PLAYER ACTIVITY NOTIFICATIONS ===== */
+        .player-activity {
+            position: fixed;
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(0.65rem, 1vw, 0.85rem);
+            padding: 0.6em 1em;
+            background: rgba(0, 0, 0, 0.7);
+            border-left: 2px solid;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0;
+            animation: activityFadeInOut 4s ease-in-out forwards;
+        }
+
+        .player-activity .callsign {
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .player-activity .action {
+            font-size: 0.85em;
+            margin-left: 0.5em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .player-activity .location {
+            display: block;
+            font-size: 0.7em;
+            color: #888;
+            letter-spacing: 0.15em;
+            margin-top: 0.2em;
+        }
+
+        /* Won - Cyan glow */
+        .player-activity.won {
+            border-color: #0ff;
+            color: #0ff;
+            text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3), inset 0 0 10px rgba(0, 255, 255, 0.1);
+        }
+
+        .player-activity.won .action {
+            color: #0f6;
+            text-shadow: 0 0 5px #0f6, 0 0 10px rgba(0, 255, 102, 0.5);
+        }
+
+        /* Lost - Magenta/Red glow */
+        .player-activity.lost {
+            border-color: #f0f;
+            color: #f0f;
+            text-shadow: 0 0 5px #f0f, 0 0 10px #f0f, 0 0 20px rgba(255, 0, 255, 0.5);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.3), inset 0 0 10px rgba(255, 0, 255, 0.1);
+        }
+
+        .player-activity.lost .action {
+            color: #f33;
+            text-shadow: 0 0 5px #f33, 0 0 10px rgba(255, 51, 51, 0.5);
+        }
+
+        @keyframes activityFadeInOut {
+            0% {
+                opacity: 0;
+                transform: translateY(10px) rotate(var(--rotation));
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(0) rotate(var(--rotation));
+            }
+            75% {
+                opacity: 1;
+                transform: translateY(0) rotate(var(--rotation));
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10px) rotate(var(--rotation));
+            }
+        }
+
+        /* Scanline effect on activity */
+        .player-activity::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.2) 2px,
+                rgba(0, 0, 0, 0.2) 4px
+            );
+            pointer-events: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .player-activity {
+                font-size: clamp(0.5rem, 1.5vw, 0.7rem);
+                padding: 0.5em 0.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .player-activity {
+                display: none; /* Hide on very small screens */
+            }
+        }
+
         /* ===== NEWS OVERLAY PANEL ===== */
         .news-overlay {
             position: fixed;
@@ -1127,6 +1240,175 @@
                 musicToggle.classList.add('active');
             }
             isPlaying = !isPlaying;
+        }
+
+        // ===== PLAYER ACTIVITY NOTIFICATIONS =====
+        const playerActivityQueue = [];
+        let activityDisplayInterval = null;
+        let lastDisplayedCallsigns = new Set();
+
+        // Fetch player activity data from the game stats API
+        async function fetchPlayerActivity() {
+            try {
+                // Try to fetch from the game's stats endpoint
+                const response = await fetch('play/api/stats/recent-activity.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    processActivityData(data);
+                }
+            } catch (e) {
+                // If API not available, use demo data for showcase
+                useDemoData();
+            }
+        }
+
+        // Process activity data and add to queue
+        function processActivityData(data) {
+            if (!data || !data.activities) return;
+            
+            // Get distinct callsigns (last 10)
+            const seen = new Set();
+            const distinctActivities = [];
+            
+            for (const activity of data.activities) {
+                if (!seen.has(activity.callsign) && distinctActivities.length < 10) {
+                    seen.add(activity.callsign);
+                    distinctActivities.push(activity);
+                }
+            }
+            
+            // Add new activities to queue (avoid duplicates)
+            distinctActivities.forEach(activity => {
+                if (!lastDisplayedCallsigns.has(activity.callsign)) {
+                    playerActivityQueue.push(activity);
+                }
+            });
+        }
+
+        // Demo data for showcase when API is not available
+        function useDemoData() {
+            const demoCallsigns = [
+                'SHADOWBYTE', 'NEON_VIPER', 'GRIDRUNNER', 'CYPH3R', 'BLADEWAVE',
+                'PHANTOM_X', 'ZERØ_COOL', 'HACKSTR', 'GLITCH_9', 'NEURAL_NK',
+                'CHROMEDGE', 'DATAFLUX', 'SYNTH_LORD', 'PIXELSTORM', 'NETDRIFTER'
+            ];
+            const locations = [
+                'Neo Tokyo, JP', 'Los Angeles, US', 'Berlin, DE', 'Seoul, KR', 
+                'Singapore, SG', 'London, UK', 'São Paulo, BR', 'Sydney, AU',
+                'Toronto, CA', 'Mumbai, IN', 'Stockholm, SE', 'Dubai, AE'
+            ];
+            const actions = ['won', 'lost'];
+            
+            // Generate random activity
+            const callsign = demoCallsigns[Math.floor(Math.random() * demoCallsigns.length)];
+            const location = locations[Math.floor(Math.random() * locations.length)];
+            const action = actions[Math.floor(Math.random() * actions.length)];
+            
+            if (!lastDisplayedCallsigns.has(callsign)) {
+                playerActivityQueue.push({ callsign, action, location });
+            }
+        }
+
+        // Display a single activity notification
+        function displayActivity(activity) {
+            if (!activity || isZoomed) return; // Don't show when news is zoomed
+            
+            const notification = document.createElement('div');
+            notification.className = `player-activity ${activity.action}`;
+            
+            // Random rotation between -8 and 8 degrees
+            const rotation = (Math.random() * 16 - 8).toFixed(1);
+            notification.style.setProperty('--rotation', `${rotation}deg`);
+            
+            // Calculate safe zones (left or right of center SVG)
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const centerZoneStart = viewportWidth * 0.25;
+            const centerZoneEnd = viewportWidth * 0.75;
+            
+            // Randomly choose left or right side
+            const side = Math.random() > 0.5 ? 'left' : 'right';
+            let posX, posY;
+            
+            if (side === 'left') {
+                // Left side: 5% to 20% of viewport
+                posX = Math.random() * (viewportWidth * 0.15) + (viewportWidth * 0.03);
+            } else {
+                // Right side: 80% to 95% of viewport (account for element width)
+                posX = Math.random() * (viewportWidth * 0.15) + (viewportWidth * 0.75);
+            }
+            
+            // Vertical position: 15% to 75% of viewport
+            posY = Math.random() * (viewportHeight * 0.6) + (viewportHeight * 0.15);
+            
+            notification.style.left = `${posX}px`;
+            notification.style.top = `${posY}px`;
+            
+            // Build notification content
+            notification.innerHTML = `
+                <span class="callsign">${escapeHtml(activity.callsign)}</span>
+                <span class="action">${activity.action === 'won' ? '▲ WON' : '▼ LOST'}</span>
+                <span class="location">◈ ${escapeHtml(activity.location)}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Track displayed callsigns (keep last 20)
+            lastDisplayedCallsigns.add(activity.callsign);
+            if (lastDisplayedCallsigns.size > 20) {
+                const first = lastDisplayedCallsigns.values().next().value;
+                lastDisplayedCallsigns.delete(first);
+            }
+            
+            // Remove after animation completes
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Start the activity display system
+        function startActivitySystem() {
+            // Fetch initial data
+            fetchPlayerActivity();
+            
+            // Fetch new data every 30 seconds
+            setInterval(fetchPlayerActivity, 30000);
+            
+            // Display notifications from queue every 3-6 seconds (random interval)
+            function displayNext() {
+                if (playerActivityQueue.length > 0) {
+                    const activity = playerActivityQueue.shift();
+                    displayActivity(activity);
+                } else {
+                    // If queue is empty, generate demo data
+                    useDemoData();
+                    if (playerActivityQueue.length > 0) {
+                        const activity = playerActivityQueue.shift();
+                        displayActivity(activity);
+                    }
+                }
+                
+                // Schedule next display with random delay (3-6 seconds)
+                const nextDelay = 3000 + Math.random() * 3000;
+                setTimeout(displayNext, nextDelay);
+            }
+            
+            // Start displaying after 2 seconds
+            setTimeout(displayNext, 2000);
+        }
+
+        // Initialize activity system when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', startActivitySystem);
+        } else {
+            startActivitySystem();
         }
     </script>
 </body>
