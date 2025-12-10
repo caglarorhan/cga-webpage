@@ -1268,11 +1268,15 @@
         // Fetch player activity data from Firestore
         async function fetchPlayerActivity() {
             try {
-                // Query playerStats collection, ordered by last activity, limit 10
+                console.log('Fetching player activity from Firestore...');
+                
+                // Query playerStats collection - get recent players
                 const snapshot = await db.collection('playerStats')
-                    .orderBy('lastPlayed', 'desc')
-                    .limit(10)
+                    .orderBy('lastSeenAt', 'desc')
+                    .limit(15)
                     .get();
+                
+                console.log('Firestore response:', snapshot.size, 'documents');
                 
                 if (!snapshot.empty) {
                     firestoreAvailable = true;
@@ -1280,24 +1284,52 @@
                     
                     snapshot.forEach(doc => {
                         const data = doc.data();
-                        // Determine win/loss from recent match or overall stats
-                        const action = data.lastMatchResult || (data.wins > data.losses ? 'won' : 'lost');
+                        console.log('Player:', data.callsign, data.country);
+                        
+                        // Get callsign
+                        const callsign = data.callsign || doc.id;
+                        
+                        // Determine win/loss from gamesWon vs gamesLost
+                        const action = data.gamesWon > data.gamesLost ? 'won' : 
+                                       data.gamesLost > data.gamesWon ? 'lost' : 'won';
+                        
+                        // Get location - use countryName or country code
+                        const location = data.countryName || data.country || 'The Grid';
                         
                         activities.push({
-                            callsign: data.callsign || data.playerName || doc.id,
+                            callsign: callsign,
                             action: action,
-                            location: data.region || data.country || 'Unknown'
+                            location: location
                         });
                     });
                     
                     processActivityData({ activities });
                 } else {
-                    // No data yet, use demo
+                    console.log('No playerStats documents found, using demo data');
                     useDemoData();
                 }
             } catch (e) {
-                console.log('Firestore fetch error, using demo data:', e.message);
-                // If Firestore not available, use demo data
+                console.error('Firestore fetch error:', e);
+                // Firestore query may need an index - try without ordering
+                try {
+                    const snapshot = await db.collection('playerStats').limit(15).get();
+                    if (!snapshot.empty) {
+                        firestoreAvailable = true;
+                        const activities = [];
+                        snapshot.forEach(doc => {
+                            const data = doc.data();
+                            activities.push({
+                                callsign: data.callsign || doc.id,
+                                action: data.gamesWon > data.gamesLost ? 'won' : 'lost',
+                                location: data.countryName || data.country || 'The Grid'
+                            });
+                        });
+                        processActivityData({ activities });
+                        return;
+                    }
+                } catch (e2) {
+                    console.error('Fallback query also failed:', e2);
+                }
                 useDemoData();
             }
         }
