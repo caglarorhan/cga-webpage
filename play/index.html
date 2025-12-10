@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CyberGrid Assault</title>
   <link rel="icon" type="image/x-icon" href="./assets/logo/favicon.ico">
+  
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QNLH88NB94"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-QNLH88NB94');
+  </script>
+  
   <style>
     * {
       margin: 0;
@@ -454,6 +464,457 @@
       width: 24px;
       height: 24px;
       fill: #0CE5F0;
+    }
+
+    /* How to Play Button */
+    #btn-how-to-play {
+      position: absolute;
+      top: 10px;
+      right: 160px;
+      width: 40px;
+      height: 40px;
+      background: rgba(10, 10, 18, 0.9);
+      border: 2px solid #F02BFF;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      pointer-events: auto;
+    }
+    
+    #btn-how-to-play:hover {
+      background: rgba(240, 43, 255, 0.2);
+      box-shadow: 0 0 15px rgba(240, 43, 255, 0.5);
+    }
+    
+    #btn-how-to-play svg {
+      width: 24px;
+      height: 24px;
+      fill: #F02BFF;
+    }
+
+    /* Stats Button */
+    #btn-stats {
+      position: absolute;
+      top: 10px;
+      right: 110px;
+      width: 40px;
+      height: 40px;
+      background: rgba(10, 10, 18, 0.9);
+      border: 2px solid #FFD700;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      pointer-events: auto;
+    }
+    
+    #btn-stats:hover {
+      background: rgba(255, 215, 0, 0.2);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    }
+    
+    #btn-stats svg {
+      width: 24px;
+      height: 24px;
+      fill: #FFD700;
+    }
+
+    /* Stats Modal */
+    #stats-modal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(10, 10, 18, 0.98);
+      border: 2px solid #FFD700;
+      padding: 25px 30px;
+      border-radius: 12px;
+      min-width: 500px;
+      max-width: 650px;
+      max-height: 85vh;
+      overflow-y: auto;
+      pointer-events: auto;
+      z-index: 100;
+    }
+
+    #stats-modal h2 {
+      color: #FFD700;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .stats-card {
+      background: rgba(255, 215, 0, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .stats-card .stats-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .stats-card .stats-value {
+      font-size: 28px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #0CE5F0, #FFD700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stats-card .stats-label {
+      color: #888;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 5px;
+    }
+
+    .stats-section {
+      background: rgba(255, 215, 0, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .stats-section h3 {
+      color: #0CE5F0;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(12, 229, 240, 0.3);
+      padding-bottom: 8px;
+    }
+
+    .stats-countries {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .country-tag {
+      background: rgba(12, 229, 240, 0.1);
+      border: 1px solid rgba(12, 229, 240, 0.3);
+      padding: 6px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      color: #0CE5F0;
+    }
+
+    .country-tag .count {
+      color: #FFD700;
+      font-weight: bold;
+      margin-left: 4px;
+    }
+
+    .stats-leaderboard {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .stats-leaderboard li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stats-leaderboard li:last-child {
+      border-bottom: none;
+    }
+
+    .stats-leaderboard .rank {
+      color: #F02BFF;
+      font-weight: bold;
+      width: 30px;
+    }
+
+    .stats-leaderboard .name {
+      flex: 1;
+      color: #fff;
+      font-size: 13px;
+    }
+
+    .stats-leaderboard .wins {
+      color: #0CE5F0;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .stats-leaderboard li:nth-child(1) .rank { color: #FFD700; }
+    .stats-leaderboard li:nth-child(2) .rank { color: #C0C0C0; }
+    .stats-leaderboard li:nth-child(3) .rank { color: #CD7F32; }
+
+    .stats-my-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .stats-my-stats .my-stat {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: rgba(10, 10, 18, 0.5);
+      border-radius: 6px;
+    }
+
+    .stats-my-stats .my-stat-label {
+      color: #888;
+      font-size: 12px;
+    }
+
+    .stats-my-stats .my-stat-value {
+      color: #0CE5F0;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .stats-loading {
+      color: #666;
+      font-style: italic;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #stats-modal .btn-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    #btn-stats-close {
+      padding: 12px 40px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, #FFD700, #F02BFF);
+      color: #000;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    #btn-stats-close:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    }
+
+    /* How to Play Modal */
+    #how-to-play-modal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(10, 10, 18, 0.98);
+      border: 2px solid #F02BFF;
+      padding: 25px 30px;
+      border-radius: 12px;
+      min-width: 650px;
+      max-width: 800px;
+      max-height: 85vh;
+      overflow-y: auto;
+      pointer-events: auto;
+      z-index: 100;
+    }
+
+    #how-to-play-modal h2 {
+      color: #F02BFF;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .how-to-play-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .htp-section {
+      background: rgba(240, 43, 255, 0.05);
+      border: 1px solid rgba(240, 43, 255, 0.2);
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .htp-section h3 {
+      color: #0CE5F0;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(12, 229, 240, 0.3);
+      padding-bottom: 8px;
+    }
+
+    .htp-subsection {
+      margin-bottom: 15px;
+    }
+
+    .htp-subsection:last-child {
+      margin-bottom: 0;
+    }
+
+    .htp-subsection h4 {
+      color: #F02BFF;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .htp-section p {
+      color: #ccc;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .htp-section ol, .htp-section ul {
+      color: #aaa;
+      font-size: 12px;
+      line-height: 1.8;
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    .htp-section ol li, .htp-section ul li {
+      margin-bottom: 4px;
+    }
+
+    .htp-section strong {
+      color: #0CE5F0;
+    }
+
+    .htp-tip {
+      background: rgba(12, 229, 240, 0.1);
+      border-left: 3px solid #0CE5F0;
+      padding: 8px 12px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #0CE5F0;
+    }
+
+    .htp-modes {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .htp-mode {
+      background: rgba(10, 10, 18, 0.5);
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .htp-controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .htp-control-group h4 {
+      color: #F02BFF;
+      font-size: 12px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .htp-key-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .htp-key {
+      background: linear-gradient(135deg, #0CE5F0, #F02BFF);
+      color: #000;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 11px;
+      min-width: 70px;
+      text-align: center;
+    }
+
+    .htp-tips-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .htp-tips-list li {
+      background: rgba(10, 10, 18, 0.5);
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      border-left: 3px solid #F02BFF;
+    }
+
+    .htp-tips-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .htp-tips-list kbd {
+      background: #333;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+      color: #0CE5F0;
+    }
+
+    #how-to-play-modal .btn-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    #btn-how-to-play-close {
+      padding: 12px 40px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, #0CE5F0, #F02BFF);
+      color: #000;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    #btn-how-to-play-close:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(240, 43, 255, 0.5);
     }
 
     /* Settings Panel */
@@ -1069,7 +1530,7 @@
       font-size: 14px;
     }
   </style>
-  <script type="module" crossorigin src="./assets/index-fYbEQ69K.js"></script>
+  <script type="module" crossorigin src="./assets/index-DPA8vH6H.js"></script>
 </head>
 <body>
   <div id="game-container">
@@ -1083,6 +1544,20 @@
         <span class="code" id="room-code-text">----</span>
         <button class="copy-btn" id="btn-copy-code">Copy</button>
       </div>
+      
+      <!-- How to Play Button -->
+      <button id="btn-how-to-play" title="How to Play">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/>
+        </svg>
+      </button>
+      
+      <!-- Stats Button -->
+      <button id="btn-stats" title="Statistics">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+        </svg>
+      </button>
       
       <!-- Settings Button -->
       <button id="btn-settings" title="Settings">
@@ -1229,6 +1704,147 @@
       <div class="btn-row">
         <button id="btn-settings-close">Cancel</button>
         <button id="btn-settings-save">Save</button>
+      </div>
+    </div>
+    
+    <!-- How to Play Modal -->
+    <div id="how-to-play-modal" class="hidden">
+      <h2>❓ How to Play</h2>
+      
+      <div class="how-to-play-content">
+        <!-- Getting Started Tab -->
+        <div class="htp-section">
+          <h3>🚀 Getting Started</h3>
+          
+          <div class="htp-subsection">
+            <h4>Host a Game (Solo or with Friends)</h4>
+            <ol>
+              <li>Enter your <strong>callsign</strong> (player name)</li>
+              <li>Click <strong>"Host Game"</strong></li>
+              <li>Configure settings in the lobby (player count, rounds)</li>
+              <li>Share the <strong>Room Code</strong> with friends</li>
+              <li>Game starts when all players join!</li>
+            </ol>
+            <p class="htp-tip">💡 <em>Set players to 1 for Solo mode with bots</em></p>
+          </div>
+          
+          <div class="htp-subsection">
+            <h4>Join a Friend's Game</h4>
+            <ol>
+              <li>Enter your <strong>callsign</strong></li>
+              <li>Click <strong>"Join Game"</strong></li>
+              <li>Enter the <strong>Room Code</strong> from your friend</li>
+              <li>Click <strong>"Connect"</strong></li>
+            </ol>
+          </div>
+        </div>
+        
+        <!-- Objective Section -->
+        <div class="htp-section">
+          <h3>🎯 Objective</h3>
+          <p>CyberGrid Assault is a <strong>fast-paced tactical shooter</strong> with hero abilities. Work with your team to eliminate enemies or complete objectives!</p>
+          
+          <div class="htp-modes">
+            <div class="htp-mode">
+              <strong>⚔️ Neon Deathmatch:</strong> Eliminate enemies to score points. First team to reach the kill target wins!
+            </div>
+            <div class="htp-mode">
+              <strong>💾 Data Spike Assault:</strong> Attackers plant the Data Spike, Defenders stop them. Classic bomb-defusal action!
+            </div>
+          </div>
+        </div>
+        
+        <!-- Controls Section -->
+        <div class="htp-section">
+          <h3>🎮 Controls</h3>
+          <div class="htp-controls-grid">
+            <div class="htp-control-group">
+              <h4>Movement & Combat</h4>
+              <div class="htp-key-row"><span class="htp-key">W A S D</span> Move</div>
+              <div class="htp-key-row"><span class="htp-key">Mouse</span> Aim</div>
+              <div class="htp-key-row"><span class="htp-key">Left Click</span> Shoot</div>
+              <div class="htp-key-row"><span class="htp-key">R / Right Click</span> Reload</div>
+              <div class="htp-key-row"><span class="htp-key">Scroll / 1-5</span> Switch Weapon</div>
+            </div>
+            <div class="htp-control-group">
+              <h4>Abilities & Utility</h4>
+              <div class="htp-key-row"><span class="htp-key">Q</span> Ability 1</div>
+              <div class="htp-key-row"><span class="htp-key">F</span> Ability 2</div>
+              <div class="htp-key-row"><span class="htp-key">X</span> Ultimate</div>
+              <div class="htp-key-row"><span class="htp-key">B</span> Buy Menu</div>
+              <div class="htp-key-row"><span class="htp-key">ESC</span> Pause</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tips Section -->
+        <div class="htp-section">
+          <h3>💡 Quick Tips & Strategies</h3>
+          <ul class="htp-tips-list">
+            <li><strong>Economy Matters:</strong> Buy weapons at round start with <kbd>B</kbd>. Save credits for powerful guns!</li>
+            <li><strong>Use Abilities:</strong> Each hero has unique abilities—master them for an advantage</li>
+            <li><strong>Team Up:</strong> Stay with your team for trades and crossfire setups</li>
+            <li><strong>Cover is Key:</strong> Use walls and obstacles—peeking wins duels</li>
+            <li><strong>Sound Cues:</strong> Listen for footsteps and ability sounds to track enemies</li>
+            <li><strong>Switch Sides:</strong> Teams swap at halftime—learn both attack and defense!</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="btn-row">
+        <button id="btn-how-to-play-close">Got It!</button>
+      </div>
+    </div>
+    
+    <!-- Stats Modal -->
+    <div id="stats-modal" class="hidden">
+      <h2>📊 Game Statistics</h2>
+      
+      <!-- Global Stats -->
+      <div class="stats-grid">
+        <div class="stats-card">
+          <div class="stats-icon">👥</div>
+          <div class="stats-value" id="stats-total-players">--</div>
+          <div class="stats-label">Total Players</div>
+        </div>
+        <div class="stats-card">
+          <div class="stats-icon">🎯</div>
+          <div class="stats-value" id="stats-total-games">--</div>
+          <div class="stats-label">Games Played</div>
+        </div>
+        <div class="stats-card">
+          <div class="stats-icon">⏱️</div>
+          <div class="stats-value" id="stats-total-hours">--</div>
+          <div class="stats-label">Hours Played</div>
+        </div>
+      </div>
+      
+      <!-- My Stats -->
+      <div class="stats-section">
+        <h3>🎮 Your Stats</h3>
+        <div class="stats-my-stats" id="stats-my-stats">
+          <div class="stats-loading">Loading your stats...</div>
+        </div>
+      </div>
+      
+      <!-- Countries -->
+      <div class="stats-section">
+        <h3>🌍 Players by Country</h3>
+        <div class="stats-countries" id="stats-countries">
+          <div class="stats-loading">Loading...</div>
+        </div>
+      </div>
+      
+      <!-- Leaderboard -->
+      <div class="stats-section">
+        <h3>🏆 Top Players</h3>
+        <ol class="stats-leaderboard" id="stats-leaderboard">
+          <li class="stats-loading">Loading leaderboard...</li>
+        </ol>
+      </div>
+      
+      <div class="btn-row">
+        <button id="btn-stats-close">Close</button>
       </div>
     </div>
     
