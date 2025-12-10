@@ -1345,8 +1345,16 @@
             for (const activity of data.activities) {
                 if (!seen.has(activity.callsign) && distinctActivities.length < 10) {
                     seen.add(activity.callsign);
+                    // Mark as real player
+                    activity.isReal = true;
                     distinctActivities.push(activity);
                 }
+            }
+            
+            // If we have less than 10 real players, add demo data to fill up
+            if (distinctActivities.length < 10) {
+                const demoActivities = generateDemoActivities(10 - distinctActivities.length, seen);
+                distinctActivities.push(...demoActivities);
             }
             
             // Add new activities to queue (avoid duplicates)
@@ -1357,8 +1365,8 @@
             });
         }
 
-        // Demo data for showcase when API is not available
-        function useDemoData() {
+        // Generate multiple demo activities
+        function generateDemoActivities(count, existingCallsigns = new Set()) {
             const demoCallsigns = [
                 'SHADOWBYTE', 'NEON_VIPER', 'GRIDRUNNER', 'CYPH3R', 'BLADEWAVE',
                 'PHANTOM_X', 'ZERØ_COOL', 'HACKSTR', 'GLITCH_9', 'NEURAL_NK',
@@ -1371,13 +1379,32 @@
             ];
             const actions = ['won', 'lost'];
             
-            // Generate random activity
-            const callsign = demoCallsigns[Math.floor(Math.random() * demoCallsigns.length)];
-            const location = locations[Math.floor(Math.random() * locations.length)];
-            const action = actions[Math.floor(Math.random() * actions.length)];
+            const activities = [];
+            const availableCallsigns = demoCallsigns.filter(c => !existingCallsigns.has(c));
             
-            if (!lastDisplayedCallsigns.has(callsign)) {
-                playerActivityQueue.push({ callsign, action, location });
+            // Shuffle available callsigns
+            for (let i = availableCallsigns.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [availableCallsigns[i], availableCallsigns[j]] = [availableCallsigns[j], availableCallsigns[i]];
+            }
+            
+            for (let i = 0; i < count && i < availableCallsigns.length; i++) {
+                activities.push({
+                    callsign: availableCallsigns[i],
+                    action: actions[Math.floor(Math.random() * actions.length)],
+                    location: locations[Math.floor(Math.random() * locations.length)],
+                    isReal: false
+                });
+            }
+            
+            return activities;
+        }
+
+        // Demo data for showcase when API is not available (legacy single add)
+        function useDemoData() {
+            const demoActivities = generateDemoActivities(1);
+            if (demoActivities.length > 0 && !lastDisplayedCallsigns.has(demoActivities[0].callsign)) {
+                playerActivityQueue.push(demoActivities[0]);
             }
         }
 
@@ -1458,8 +1485,13 @@
                 if (playerActivityQueue.length > 0) {
                     const activity = playerActivityQueue.shift();
                     displayActivity(activity);
+                } else if (firestoreAvailable) {
+                    // Queue empty but Firestore works - refetch real data
+                    // Clear the displayed callsigns to allow showing them again
+                    lastDisplayedCallsigns.clear();
+                    fetchPlayerActivity();
                 } else {
-                    // If queue is empty, generate demo data
+                    // Firestore not available, use demo data as fallback
                     useDemoData();
                     if (playerActivityQueue.length > 0) {
                         const activity = playerActivityQueue.shift();
