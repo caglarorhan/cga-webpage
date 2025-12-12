@@ -784,6 +784,47 @@
       fill: #FFD700;
     }
 
+    /* Voice Chat Microphone Button */
+    #btn-mic-toggle {
+      position: absolute;
+      top: 10px;
+      right: 160px;
+      width: 40px;
+      height: 40px;
+      background: rgba(10, 10, 18, 0.9);
+      border: 2px solid #00FF00;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      pointer-events: auto;
+      font-size: 20px;
+    }
+    
+    #btn-mic-toggle.show {
+      display: flex;
+    }
+    
+    #btn-mic-toggle:hover {
+      background: rgba(0, 255, 0, 0.2);
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+    }
+    
+    #btn-mic-toggle.active {
+      background: rgba(0, 255, 0, 0.3);
+      border-color: #00FF00;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+    }
+    
+    #btn-mic-toggle.muted {
+      background: rgba(80, 80, 80, 0.5);
+      border-color: #666;
+      opacity: 0.6;
+      filter: grayscale(100%);
+    }
+
     /* Stats Modal */
     #stats-modal {
       position: absolute;
@@ -1790,7 +1831,7 @@
       font-size: 14px;
     }
   </style>
-  <script type="module" crossorigin src="./assets/index-D2QNmCaE.js"></script>
+  <script type="module" crossorigin src="./assets/index-BiR7_MU1.js"></script>
 </head>
 <body>
   <div id="game-container">
@@ -1811,6 +1852,9 @@
           <path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/>
         </svg>
       </button>
+      
+      <!-- Microphone Toggle Button (Voice Chat) -->
+      <button id="btn-mic-toggle" title="Toggle Microphone">🎤</button>
       
       <!-- Stats Button -->
       <button id="btn-stats" title="Statistics">
@@ -2267,7 +2311,7 @@
     </div>
     
     <div id="connection-ui">
-      <div id="version-badge">v0.5.0-beta</div>
+      <div id="version-badge"></div>
       <h2>CyberGrid Assault</h2>
       <input type="text" id="player-name" placeholder="Enter your callsign..." maxlength="16">
       <button id="btn-host">Host Game</button>
