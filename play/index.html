@@ -65,6 +65,31 @@
       pointer-events: none;
     }
     
+    #weapon-tooltip {
+      position: absolute;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(10, 10, 18, 0.95);
+      border: 1px solid #0CE5F0;
+      color: #0CE5F0;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+      z-index: 1000;
+    }
+    
+    #weapon-tooltip.visible {
+      opacity: 1;
+    }
+    
     #connection-ui {
       position: absolute;
       top: 50%;
@@ -730,7 +755,7 @@
     #btn-how-to-play {
       position: absolute;
       top: 10px;
-      right: 160px;
+      right: 110px;
       width: 40px;
       height: 40px;
       background: rgba(10, 10, 18, 0.9);
@@ -750,16 +775,18 @@
     }
     
     #btn-how-to-play svg {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       fill: #F02BFF;
+      stroke: #F02BFF;
+      stroke-width: 0.5;
     }
 
     /* Stats Button */
     #btn-stats {
       position: absolute;
       top: 10px;
-      right: 110px;
+      right: 60px;
       width: 40px;
       height: 40px;
       background: rgba(10, 10, 18, 0.9);
@@ -1831,13 +1858,14 @@
       font-size: 14px;
     }
   </style>
-  <script type="module" crossorigin src="./assets/index-22OxDTAB.js"></script>
+  <script type="module" crossorigin src="./assets/index-CSN0XLTV.js"></script>
 </head>
 <body>
   <div id="game-container">
     <canvas id="game-canvas"></canvas>
     <div id="ui-overlay">
       <div id="debug-info"></div>
+      <div id="weapon-tooltip"></div>
       
       <!-- Room Code Display (shown during hosting) -->
       <div id="room-code-display" class="hidden">
@@ -2305,6 +2333,41 @@
             <span class="weapon-stats">DMG: 120 | ROF: 0.8/s | One-shot</span>
           </div>
           <span class="weapon-price">$2100</span>
+        </div>
+        <div class="weapon-item" data-weapon="shard_launcher" data-slot="6">
+          <div class="weapon-info">
+            <span class="weapon-name">[6] Shard Launcher</span>
+            <span class="weapon-stats">DMG: 40 | ROF: 3/s | Pistol</span>
+          </div>
+          <span class="weapon-price">$600</span>
+        </div>
+        <div class="weapon-item" data-weapon="nano_repeater" data-slot="7">
+          <div class="weapon-info">
+            <span class="weapon-name">[7] Nano Repeater</span>
+            <span class="weapon-stats">DMG: 22 | ROF: 10/s | Budget Auto</span>
+          </div>
+          <span class="weapon-price">$900</span>
+        </div>
+        <div class="weapon-item" data-weapon="arc_welder" data-slot="8">
+          <div class="weapon-info">
+            <span class="weapon-name">[8] Arc Welder</span>
+            <span class="weapon-stats">DMG: 20 | ROF: 15/s | Beam</span>
+          </div>
+          <span class="weapon-price">$1300</span>
+        </div>
+        <div class="weapon-item" data-weapon="phase_repeater" data-slot="9">
+          <div class="weapon-info">
+            <span class="weapon-name">[9] Phase Repeater</span>
+            <span class="weapon-stats">DMG: 28 | ROF: 7/s | Wallbang</span>
+          </div>
+          <span class="weapon-price">$1800</span>
+        </div>
+        <div class="weapon-item" data-weapon="plasma_cannon" data-slot="10">
+          <div class="weapon-info">
+            <span class="weapon-name">[0] Plasma Cannon</span>
+            <span class="weapon-stats">DMG: 80 | ROF: 1.5/s | Explosive</span>
+          </div>
+          <span class="weapon-price">$2800</span>
         </div>
       </div>
       <div class="buy-hint">Press B to close | Click weapon to buy</div>
