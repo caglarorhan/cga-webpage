@@ -147,8 +147,268 @@
       color: #fff !important;
     }
     
+    #btn-find-match {
+      background: linear-gradient(135deg, #FFD700, #FFA500) !important;
+      color: #000 !important;
+    }
+    
+    #btn-find-match:hover {
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5) !important;
+    }
+    
     .hidden {
       display: none !important;
+    }
+
+    /* Lobby Browser Modal */
+    #lobby-browser-modal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(10, 10, 18, 0.98);
+      border: 2px solid #FFD700;
+      padding: 25px 30px;
+      border-radius: 12px;
+      min-width: 550px;
+      max-width: 700px;
+      max-height: 80vh;
+      overflow-y: auto;
+      pointer-events: auto;
+      z-index: 100;
+    }
+
+    #lobby-browser-modal h2 {
+      color: #FFD700;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .lobby-browser-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .lobby-browser-header .refresh-btn {
+      background: transparent;
+      border: 1px solid #FFD700;
+      color: #FFD700;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .lobby-browser-header .refresh-btn:hover {
+      background: rgba(255, 215, 0, 0.1);
+    }
+
+    .lobby-browser-header .refresh-btn.spinning svg {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .lobby-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+      max-height: 350px;
+      overflow-y: auto;
+    }
+
+    .lobby-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 215, 0, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 8px;
+      padding: 12px 15px;
+      transition: all 0.2s;
+    }
+
+    .lobby-item:hover {
+      background: rgba(255, 215, 0, 0.1);
+      border-color: rgba(255, 215, 0, 0.4);
+    }
+
+    .lobby-item .lobby-info {
+      flex: 1;
+    }
+
+    .lobby-item .lobby-host {
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .lobby-item .lobby-details {
+      color: #888;
+      font-size: 11px;
+      display: flex;
+      gap: 15px;
+    }
+
+    .lobby-item .lobby-details span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .lobby-item .lobby-players {
+      color: #0CE5F0;
+      font-size: 13px;
+      font-weight: bold;
+      margin-right: 15px;
+    }
+
+    .lobby-item .join-btn {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #000;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 12px;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+
+    .lobby-item .join-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    }
+
+    .lobby-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+    }
+
+    .lobby-empty .empty-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .lobby-empty p {
+      margin-bottom: 10px;
+    }
+
+    .lobby-empty .hint {
+      font-size: 12px;
+      color: #555;
+    }
+
+    #lobby-browser-modal .btn-row {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    #btn-lobby-browser-close {
+      padding: 12px 40px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: #333;
+      color: #fff;
+      transition: all 0.2s;
+    }
+
+    #btn-lobby-browser-close:hover {
+      background: #444;
+    }
+
+    /* Make Public Toggle */
+    .public-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 215, 0, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 6px;
+      padding: 12px 15px;
+      margin-top: 15px;
+    }
+
+    .public-toggle .toggle-label {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .public-toggle .toggle-label span {
+      color: #FFD700;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .public-toggle .toggle-label small {
+      color: #666;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .public-toggle .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 26px;
+    }
+
+    .public-toggle .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .public-toggle .toggle-switch .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #333;
+      transition: 0.3s;
+      border-radius: 26px;
+    }
+
+    .public-toggle .toggle-switch .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #666;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    .public-toggle .toggle-switch input:checked + .slider {
+      background-color: rgba(255, 215, 0, 0.3);
+    }
+
+    .public-toggle .toggle-switch input:checked + .slider:before {
+      transform: translateX(24px);
+      background-color: #FFD700;
     }
 
     /* Pause Menu */
@@ -1530,7 +1790,7 @@
       font-size: 14px;
     }
   </style>
-  <script type="module" crossorigin src="./assets/index-DPA8vH6H.js"></script>
+  <script type="module" crossorigin src="./assets/index-6L46NC1w.js"></script>
 </head>
 <body>
   <div id="game-container">
@@ -2011,11 +2271,40 @@
       <h2>CyberGrid Assault</h2>
       <input type="text" id="player-name" placeholder="Enter your callsign..." maxlength="16">
       <button id="btn-host">Host Game</button>
+      <button id="btn-find-match">🌐 Find Match</button>
       <button id="btn-join">Join Game</button>
       <input type="text" id="room-code" placeholder="Room code..." class="hidden">
       <div id="join-buttons" class="hidden">
         <button id="btn-back">← Back</button>
         <button id="btn-connect">Connect</button>
+      </div>
+    </div>
+    
+    <!-- Lobby Browser Modal -->
+    <div id="lobby-browser-modal" class="hidden">
+      <h2>🌐 Find Match</h2>
+      
+      <div class="lobby-browser-header">
+        <span style="color: #888; font-size: 13px;">Available public games</span>
+        <button class="refresh-btn" id="btn-refresh-lobbies">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+          </svg>
+          Refresh
+        </button>
+      </div>
+      
+      <div class="lobby-list" id="lobby-list">
+        <!-- Lobbies will be populated dynamically -->
+        <div class="lobby-empty" id="lobby-empty">
+          <div class="empty-icon">🎮</div>
+          <p>No public games available</p>
+          <p class="hint">Be the first to host a public game!</p>
+        </div>
+      </div>
+      
+      <div class="btn-row">
+        <button id="btn-lobby-browser-close">Close</button>
       </div>
     </div>
     
@@ -2048,6 +2337,17 @@
           <option value="9">Best of 9 (First to 5)</option>
           <option value="13">Best of 13 (First to 7)</option>
         </select>
+        
+        <div class="public-toggle">
+          <div class="toggle-label">
+            <span>🌐 Make Public</span>
+            <small>Anyone can find and join this game</small>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="lobby-make-public">
+            <span class="slider"></span>
+          </label>
+        </div>
       </div>
       
       <div class="player-count">
